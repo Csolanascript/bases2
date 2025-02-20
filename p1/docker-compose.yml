@@ -1,0 +1,94 @@
+services:
+
+  # PostgreSQL Service
+  postgres:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+
+  # Adminer Service (Web UI for Databases)
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  # Oracle XE Service
+  oracle:
+    image: gvenzl/oracle-xe:latest
+    restart: always
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "true"
+      APP_USER: admin
+      APP_USER_PASSWORD: admin
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Cassandra Service
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra-node
+    restart: always
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: "MiCluster"
+      CASSANDRA_NUM_TOKENS: 256
+      CASSANDRA_START_RPC: "true"
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+  # HBase Service
+  hbase:
+    image: harisekhon/hbase
+    container_name: hbase-node
+    restart: always
+    ports:
+      - "16010:16010"  # Interfaz Web de HBase
+      - "9090:9090"    # Thrift Server para acceso remoto
+    environment:
+      HBASE_MANAGES_ZK: "true"  # Para gestionar Zookeeper internamente
+    volumes:
+      - hbase-data:/hbase-data  # Persistencia de datos
+
+  # IBM Db2 Service
+  db2:
+    image: ibmcom/db2
+    restart: always
+    container_name: db2-server
+    privileged: true
+    environment:
+      DB2INST1_PASSWORD: admin
+      DBNAME: testdb
+      LICENSE: accept
+      BLU: "true"
+      ENABLE_ORACLE_COMPATIBILITY: "false"
+      UPDATEAVAIL: "NO"
+      TO_CREATE_SAMPLEDB: "false"
+    ports:
+      - "50000:50000"  # Puerto predeterminado de Db2
+    volumes:
+      - db2-data:/database  # Volumen para persistencia
+
+volumes:
+  cassandra-data:
+  pgadmin-data:
+  hbase-data:
+  db2-data:  # Volumen para IBM Db2
