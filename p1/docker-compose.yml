@@ -56,10 +56,6 @@ services:
     volumes:
       - cassandra-data:/var/lib/cassandra
 
-
-
-
-
   # HBase Service
   hbase:
     image: harisekhon/hbase
