@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# 📌 IMPORTANTE: Configuración previa en el archivo de Cassandra
+# Para habilitar autenticación y autorización en Cassandra, asegúrate de cambiar las siguientes líneas
+# en el archivo de configuración `/etc/cassandra/cassandra.yaml`:
+#
+# authenticator: AllowAllAuthenticator  →  Se ha cambiado por: authenticator: PasswordAuthenticator
+# authorizer: AllowAllAuthorizer        →  Se ha cambiado por: authorizer: CassandraAuthorizer
+#
+# Después de realizar estos cambios, reinicia Cassandra para que los ajustes tengan efecto.
+
 # Nombre del contenedor de Cassandra
 CONTAINER_NAME="cassandra-node"
 
@@ -32,6 +41,7 @@ CREATE ROLE IF NOT EXISTS lector WITH PASSWORD = 'lector' AND LOGIN = true;
 CREATE ROLE IF NOT EXISTS escritor WITH PASSWORD = 'escritor' AND LOGIN = true;
 
 -- Asignar permisos solo si los roles existen
+GRANT CREATE ON KEYSPACE mi_keyspace TO escritor;
 GRANT MODIFY ON KEYSPACE mi_keyspace TO escritor;
 GRANT SELECT ON KEYSPACE mi_keyspace TO escritor;
 GRANT SELECT ON KEYSPACE mi_keyspace TO lector;
@@ -40,4 +50,32 @@ GRANT SELECT ON KEYSPACE mi_keyspace TO lector;
 SELECT * FROM usuarios;
 EOF
 
-echo "✅ Script finalizado con éxito."
+echo "✅ Configuración inicial completada."
+
+echo "🔹 Probando acceso con el rol 'lector'..."
+docker exec -i $CONTAINER_NAME cqlsh -u lector -p lector <<EOF
+USE mi_keyspace;
+
+-- Intentar insertar datos (debería fallar)
+INSERT INTO usuarios (id, nombre, edad) VALUES (5, 'Eva', 29);
+
+-- Intentar leer los datos (debería funcionar)
+SELECT * FROM usuarios;
+EOF
+
+echo "🔹 Probando acceso con el rol 'escritor'..."
+docker exec -i $CONTAINER_NAME cqlsh -u escritor -p escritor <<EOF
+USE mi_keyspace;
+
+-- Intentar crear una nueva tabla (debería funcionar)
+CREATE TABLE IF NOT EXISTS productos (
+    id INT PRIMARY KEY,
+    nombre TEXT,
+    precio DECIMAL
+);
+
+-- Intentar leer los datos de usuarios (debería funcionar)
+SELECT * FROM usuarios;
+EOF
+
+echo "✅ Pruebas finalizadas."
