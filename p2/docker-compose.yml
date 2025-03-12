@@ -1,0 +1,69 @@
+services:
+
+  # PostgreSQL Service
+  postgres:
+    image: postgres
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    # Se mantiene el volumen de datos para persistencia
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # Adminer Service (Web UI for Databases)
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  # Oracle XE Service
+  oracle:
+    image: gvenzl/oracle-xe:latest
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "true"
+      APP_USER: admin
+      APP_USER_PASSWORD: admin
+    volumes:
+      - oracle-data:/ORCL
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
+  # IBM Db2 Service
+  db2:
+    image: ibmcom/db2
+    container_name: db2-server
+    privileged: true
+    environment:
+      DB2INST1_PASSWORD: admin
+      DBNAME: testdb
+      LICENSE: accept
+      BLU: "true"
+      ENABLE_ORACLE_COMPATIBILITY: "false"
+      UPDATEAVAIL: "NO"
+      TO_CREATE_SAMPLEDB: "false"
+    ports:
+      - "50000:50000"
+    volumes:
+      - db2-data:/database
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+  oracle-data:
+  db2-data:
