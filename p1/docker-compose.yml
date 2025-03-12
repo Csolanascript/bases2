@@ -47,7 +47,7 @@ services:
   cassandra:
     image: cassandra:latest
     container_name: cassandra-node
-    restart: unless-stopped
+    #restart: unless-stopped
     ports:
       - "9042:9042"
     environment:
