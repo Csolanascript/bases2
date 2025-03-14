@@ -4,7 +4,7 @@
 # Asegúrate de que tu contenedor se llame "oracle" (según tu docker-compose.yml).
 # Revisa que el usuario y contraseña sean correctos, así como el nombre del servicio (XEPDB1).
 
-docker exec -i p2_oracle_1 sqlplus admin/admin@//localhost:1521/XEPDB1 <<EOF
+docker exec -i p2-oracle-1 sqlplus admin/admin@//localhost:1521/XEPDB1 <<EOF
 
 -- Opcionalmente, puedes desactivar temporalmente la verificación de FK para poder recrear tablas sin conflictos:
 -- ALTER SESSION SET "_ORACLE_SCRIPT"=true;  -- Suele ser necesario en algunos contenedores que usan schemas diferenciados

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-docker exec -i p2_oracle-1 sqlplus admin/admin@//localhost:1521/XEPDB1 <<EOF
+docker exec -i p2-oracle-1 sqlplus admin/admin@//localhost:1521/XEPDB1 <<EOF
 
 -- Insertar datos en CLIENTE
 INSERT INTO Cliente (id_cliente, nombre, apellidos, edad, telefono)
