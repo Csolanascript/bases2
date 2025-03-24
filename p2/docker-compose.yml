@@ -42,22 +42,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-    
-  oracle2:
-    image: gvenzl/oracle-xe:latest
-    ports:
-      - "1522:1522"
-    environment:
-      ORACLE_RANDOM_PASSWORD: "true"
-      APP_USER: admin
-      APP_USER_PASSWORD: admin
-    volumes:
-      - oracle-data:/ORCL
-    healthcheck:
-      test: ["CMD", "healthcheck.sh"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
 
 
   # IBM Db2 Service
