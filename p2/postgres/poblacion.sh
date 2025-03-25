@@ -5,7 +5,7 @@
 #           y luego ejecutar SELECTs para comprobar la inserción.
 # Se asume que el contenedor tiene psql disponible.
 
-CONTAINER_NAME="eb099d90c2ae"  # Contenedor de PostgreSQL
+CONTAINER_NAME="15a3fa6d5e95"  # Contenedor de PostgreSQL
 DATABASE="p2"                  # Nombre de la base de datos
 ADMIN_USER="postgres"          # Usuario administrador de PostgreSQL
 

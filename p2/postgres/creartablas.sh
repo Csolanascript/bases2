@@ -4,7 +4,7 @@
 #           e insertar datos de ejemplo de forma idempotente.
 # Se asume que el contenedor tiene psql disponible.
 
-CONTAINER_NAME="eb099d90c2ae"  # Contenedor de PostgreSQL
+CONTAINER_NAME="p2_postgres_1"  # Contenedor de PostgreSQL
 DATABASE="p2"                  # Nombre de la base de datos
 ADMIN_USER="postgres"          # Usuario administrador de PostgreSQL
 
@@ -12,12 +12,17 @@ echo "Ejecutando script dentro del contenedor '$CONTAINER_NAME' para borrar y cr
 
 # Crear la base de datos si no existe
 echo "Creando base de datos '$DATABASE' (si no existe)..."
-docker exec -it $CONTAINER_NAME psql -U $ADMIN_USER -c "SELECT 'CREATE DATABASE $DATABASE' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$DATABASE')\gexec;"
-echo "Base de datos '$DATABASE' creada (o ya existía)."
+RESULT=$(docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$DATABASE'")
+if [ "$RESULT" != "1" ]; then
+    docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d postgres -c "CREATE DATABASE $DATABASE"
+    echo "Base de datos '$DATABASE' creada."
+else
+    echo "Base de datos '$DATABASE' ya existe."
+fi
 
 # Borrar todas las tablas existentes (ordenado para evitar dependencias)
 echo "Borrando todas las tablas existentes..."
-docker exec -it $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
+docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
 DROP TABLE IF EXISTS transferencia CASCADE;
 DROP TABLE IF EXISTS ingreso CASCADE;
 DROP TABLE IF EXISTS retirada CASCADE;
@@ -33,7 +38,7 @@ echo "Todas las tablas borradas."
 
 # Crear las tablas con herencia
 echo "Creando tablas bancarias..."
-docker exec -it $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
+docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
 -- Tabla sucursal
 CREATE TABLE IF NOT EXISTS sucursal (
   codigo_sucursal INT PRIMARY KEY,
@@ -112,7 +117,7 @@ echo "Tablas creadas (o ya existían)."
 
 # Insertar datos de ejemplo de forma idempotente
 echo "Insertando datos de ejemplo en las tablas (si están vacías)..."
-docker exec -it $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
+docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
 -- Insertar un cliente de ejemplo
 INSERT INTO cliente (email, nombre, apellidos, edad, telefono, direccion)
 SELECT 'ejemplo@cliente.com', 'Juan', 'Pérez', 30, '123456789', 'Calle Falsa 123'

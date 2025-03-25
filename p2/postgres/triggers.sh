@@ -17,7 +17,7 @@
 #  • La base de datos se llama "p2".
 #  • El usuario administrador es "postgres".
 
-CONTAINER_NAME="eb099d90c2ae"  # Nombre del contenedor de PostgreSQL
+CONTAINER_NAME="15a3fa6d5e95"  # Nombre del contenedor de PostgreSQL
 DATABASE="p2"                  # Nombre de la base de datos
 ADMIN_USER="postgres"          # Usuario administrador
 

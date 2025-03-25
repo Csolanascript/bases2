@@ -29,6 +29,7 @@ services:
   # Oracle XE Service
   oracle:
     image: gvenzl/oracle-xe:latest
+    container_name: p2-oracle-1
     ports:
       - "1521:1521"
     environment:
@@ -45,6 +46,7 @@ services:
     
   oracle2:
      image: gvenzl/oracle-xe:latest
+     container_name: p2-oracle2-1
      ports:
        - "1522:1522"
      environment:
