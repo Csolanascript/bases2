@@ -87,6 +87,9 @@ CREATE TABLE Account (
     CONSTRAINT chk_ads_for_premium CHECK (
         (MembershipType = 'premium' AND AdsPerSession = 0) OR MembershipType != 'premium'
     )
+    CONSTRAINT chk_base_account CHECK (
+        (MembershipType = 'base' AND ExpiresAt IS NULL AND AutoRenew IS NULL) OR MembershipType != 'base'
+    )
 );
 
 
