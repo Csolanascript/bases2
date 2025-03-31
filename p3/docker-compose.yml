@@ -1,0 +1,38 @@
+services:
+
+  # PostgreSQL Service
+  postgres:
+    image: postgres
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    # Se mantiene el volumen de datos para persistencia
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # Oracle XE Service
+  oracle:
+    image: gvenzl/oracle-xe:latest
+    container_name: p2-oracle-1
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "true"
+      APP_USER: admin
+      APP_USER_PASSWORD: admin
+    volumes:
+      - oracle-data:/ORCL
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+  oracle-data:
+  db2-data:
