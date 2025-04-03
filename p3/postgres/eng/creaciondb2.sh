@@ -1,12 +1,12 @@
 #!/bin/bash
-# Script: docker_postgres_videojuegos.sh
-# Objetivo: Crear base de datos de videojuegos en contenedor Docker PostgreSQL
+# Script: docker_postgres_videojuegos_db2.sh
+# Objetivo: Crear la base de datos 'db2' y las tablas correspondientes en el esquema 'esquema_videojuegos_en'
 
 CONTAINER_NAME="p3-postgres-1"  # Nombre del contenedor Docker
-DATABASE="p3"                   # Base de datos destino
-ADMIN_USER="postgres"          # Usuario administrador
+DATABASE="db2"                  # Base de datos destino
+ADMIN_USER="postgres"           # Usuario administrador
 
-echo "Ejecutando script dentro del contenedor '$CONTAINER_NAME' para crear la base de datos de videojuegos..."
+echo "Ejecutando script dentro del contenedor '$CONTAINER_NAME' para crear las tablas en inglés en 'db2'..."
 
 # Crear la base de datos si no existe
 echo "Verificando existencia de la base de datos '$DATABASE'..."
@@ -18,23 +18,26 @@ else
     echo "La base de datos '$DATABASE' ya existe."
 fi
 
-# Borrar todas las tablas en orden por dependencias
+# Crear el esquema
+echo "Creando esquema 'esquema_videojuegos_en'..."
+docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "CREATE SCHEMA IF NOT EXISTS esquema_videojuegos_en;"
+
+# Borrar tablas existentes
 echo "Eliminando tablas existentes..."
 docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
-DROP TABLE IF EXISTS GameOwnership CASCADE;
-DROP TABLE IF EXISTS Videogame CASCADE;
-DROP TABLE IF EXISTS Platform CASCADE;
-DROP TABLE IF EXISTS Account CASCADE;
-DROP TABLE IF EXISTS Company CASCADE;
-
+DROP TABLE IF EXISTS esquema_videojuegos_en.GameOwnership CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Videogame CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Platform CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Account CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Company CASCADE;
 "
 echo "Tablas eliminadas."
 
-# Crear las tablas
-echo "Creando tablas..."
+# Crear las tablas en 'db2'
+echo "Creando tablas en el esquema 'esquema_videojuegos_en'..."
 docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
 -- Company
-CREATE TABLE Company (
+CREATE TABLE esquema_videojuegos_en.Company (
     Name VARCHAR(255) NOT NULL,
     Director VARCHAR(255),
     CreatedAt DATE,
@@ -45,19 +48,19 @@ CREATE TABLE Company (
     CONSTRAINT chk_company_type CHECK (Type IN ('developer', 'manufacturer'))
 );
 
-
-CREATE TABLE Platform (
+-- Platform
+CREATE TABLE esquema_videojuegos_en.Platform (
     Name VARCHAR(255) NOT NULL,
     ReleaseDate DATE,
     SalesVolume INT,
     Manufacturer VARCHAR(255),
     Generation VARCHAR(255),
     PRIMARY KEY (Name),
-    FOREIGN KEY (Manufacturer) REFERENCES Company(Name)
+    FOREIGN KEY (Manufacturer) REFERENCES esquema_videojuegos_en.Company(Name)
 );
 
-
-CREATE TABLE Videogame (
+-- Videogame
+CREATE TABLE esquema_videojuegos_en.Videogame (
     Name VARCHAR(255) NOT NULL,
     Developer VARCHAR(255),
     Console VARCHAR(255),
@@ -66,12 +69,12 @@ CREATE TABLE Videogame (
     Rating INT,
     Genres VARCHAR(255),
     PRIMARY KEY (Name),
-    FOREIGN KEY(Developer) REFERENCES Company(Name) ON DELETE CASCADE,
-    FOREIGN KEY(Console) REFERENCES Platform(Name) ON DELETE CASCADE
+    FOREIGN KEY(Developer) REFERENCES esquema_videojuegos_en.Company(Name) ON DELETE CASCADE,
+    FOREIGN KEY(Console) REFERENCES esquema_videojuegos_en.Platform(Name) ON DELETE CASCADE
 );
 
-
-CREATE TABLE Account (
+-- Account
+CREATE TABLE esquema_videojuegos_en.Account (
     NickName VARCHAR(255) NOT NULL,
     RegisteredAt DATE,
     Name VARCHAR(255),
@@ -92,18 +95,15 @@ CREATE TABLE Account (
     )
 );
 
-
-CREATE TABLE GameOwnership (
+-- GameOwnership
+CREATE TABLE esquema_videojuegos_en.GameOwnership (
     NickName VARCHAR(255),
     Videogame VARCHAR(255),
     PurchasedAt DATE,
     TotalPlaytime INT,
     PRIMARY KEY (NickName, Videogame),
-    FOREIGN KEY (NickName) REFERENCES Account(NickName) ON DELETE CASCADE,
-    FOREIGN KEY (Videogame) REFERENCES Videogame(Name) ON DELETE CASCADE
+    FOREIGN KEY (NickName) REFERENCES esquema_videojuegos_en.Account(NickName) ON DELETE CASCADE,
+    FOREIGN KEY (Videogame) REFERENCES esquema_videojuegos_en.Videogame(Name) ON DELETE CASCADE
 );
 "
-
-
-
-echo "Tablas creadas correctamente."
+echo "Tablas creadas correctamente en 'db2'."

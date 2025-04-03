@@ -40,9 +40,9 @@ VALUES
 INSERT INTO Account (NickName, RegisteredAt, Name, Email, Country, BalanceAmount, MembershipType, ExpiresAt, AutoRenew, AdsPerSession) 
 VALUES
 ('user123', '2021-05-01', 'Alice Green', 'alice@example.com', 'USA', 50.00, 'premium', '2023-05-01', TRUE, 0),
-('user456', '2020-11-15', 'Bob White', 'bob@example.com', 'Canada', 20.00, 'base', '2022-11-15', FALSE, 5),
+('user456', '2020-11-15', 'Bob White', 'bob@example.com', 'Canada', 20.00, 'base', null, null, 5),
 ('user789', '2021-08-30', 'Charlie Brown', 'charlie@example.com', 'UK', 30.00, 'premium', '2024-08-30', TRUE, 0),
-('user101', '2021-01-20', 'David Black', 'david@example.com', 'Germany', 40.00, 'base', '2023-01-20', TRUE, 4),
+('user101', '2021-01-20', 'David Black', 'david@example.com', 'Germany', 40.00, 'base', null , null, 4),
 ('user202', '2022-02-18', 'Eve Blue', 'eve@example.com', 'Australia', 25.00, 'premium', '2025-02-18', FALSE, 0);
 
 -- Insertar datos en la tabla GameOwnership
@@ -60,6 +60,7 @@ SELECT * FROM Platform;
 SELECT * FROM Videogame;
 SELECT * FROM Account;
 SELECT * FROM GameOwnership;
+SELECT * FROM Usuario;
 "
 
 echo "Datos de prueba insertados."
