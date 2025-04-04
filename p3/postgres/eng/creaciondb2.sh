@@ -70,7 +70,9 @@ CREATE TABLE esquema_videojuegos_en.Videogame (
     Genres VARCHAR(255),
     PRIMARY KEY (Name),
     FOREIGN KEY(Developer) REFERENCES esquema_videojuegos_en.Company(Name) ON DELETE CASCADE,
-    FOREIGN KEY(Console) REFERENCES esquema_videojuegos_en.Platform(Name) ON DELETE CASCADE
+    FOREIGN KEY(Console) REFERENCES esquema_videojuegos_en.Platform(Name) ON DELETE CASCADE,
+    CONSTRAINT chk_rating CHECK (Rating BETWEEN 0 AND 10),
+    CONSTRAINT chk_price CHECK (Price >= 0)
 );
 
 -- Account

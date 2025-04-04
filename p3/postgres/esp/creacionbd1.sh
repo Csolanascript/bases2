@@ -82,7 +82,9 @@ CREATE TABLE esquema_videojuegos.Videojuego (
     FechaLanzamiento DATE,
     Puntuacion NUMERIC(3,1),
     FOREIGN KEY(Desarrolladora) REFERENCES esquema_videojuegos.Desarrolladora(Nombre),
-    FOREIGN KEY(Consola) REFERENCES esquema_videojuegos.Consola(Nombre)
+    FOREIGN KEY(Consola) REFERENCES esquema_videojuegos.Consola(Nombre),
+    CHECK (Puntuacion >= 0 AND Puntuacion <= 10),
+    CHECK (Precio >= 0)
 );
 
 -- GeneroVideojuego
