@@ -42,6 +42,8 @@ INSERT INTO esquema_videojuegos.Videojuego (Nombre, Desarrolladora, Consola, Pre
 -- Insertar datos en la tabla 'GeneroVideojuego'
 INSERT INTO esquema_videojuegos.GeneroVideojuego (Videojuego, Genero) VALUES
 ('The Last of Us Part II', 'Aventura'),
+('The Last of Us Part II', 'Acción'),
+('The Last of Us Part II', 'Historia'),
 ('FIFA 21', 'Deportes'),
 ('Assassins Creed Valhalla', 'Acción');
 
@@ -61,6 +63,8 @@ INSERT INTO esquema_videojuegos.UsuarioCorriente (NombreUsuario, NumeroAnunciosP
 -- Insertar datos en la tabla 'PosesionVideojuego'
 INSERT INTO esquema_videojuegos.PosesionVideojuego (NombreUsuario, Videojuego, FechaCompra, NumHorasJugadas) VALUES
 ('user1', 'The Last of Us Part II', '2021-01-05', 10),
+('user1', 'Assassins Creed Valhalla', '2022-11-10', 25),
+('user2', 'The Last of Us Part II', '2021-02-15', 15),
 ('user2', 'FIFA 21', '2021-03-01', 5);
 
 SELECT * FROM esquema_videojuegos.Compania;

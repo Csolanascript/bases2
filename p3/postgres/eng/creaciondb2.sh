@@ -45,7 +45,7 @@ CREATE TABLE esquema_videojuegos_en.Company (
     License VARCHAR(255),
     Type VARCHAR(255),  
     PRIMARY KEY (Name),
-    CONSTRAINT chk_company_type CHECK (Type IN ('developer', 'manufacturer'))
+    CONSTRAINT chk_company_type CHECK (Type IN ('Desarrolladora', 'Fabricante'))
 );
 
 -- Platform
