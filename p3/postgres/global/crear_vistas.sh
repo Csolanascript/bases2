@@ -6,6 +6,16 @@ CONTAINER_NAME="p3-postgres-1"  # Nombre del contenedor Docker
 DATABASE="db_global"            # Base de datos global destino
 ADMIN_USER="postgres"           # Usuario administrador
 
+# Crear la base de datos 'db_global' si no existe
+echo "Verificando existencia de la base de datos '$DATABASE'..."
+RESULT=$(docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$DATABASE'")
+if [ "$RESULT" != "1" ]; then
+    docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d postgres -c "CREATE DATABASE $DATABASE"
+    echo "Base de datos '$DATABASE' creada."
+else
+    echo "La base de datos '$DATABASE' ya existe."
+fi
+
 echo "Ejecutando script para habilitar la extensión dblink y crear las vistas globales..."
 
 # 1. Instalar la extensión dblink en la base de datos 'db_global'
@@ -693,15 +703,6 @@ WHERE NickName = 'user3' AND Videogame = 'FIFA 21';
 -- DELETE
 DELETE FROM esquema_global.GlobalOwnership
 WHERE NickName = 'user3' AND Videogame = 'FIFA 21';
-
-
-
-
-
-
-
-
-
 
 -- Desconectar las conexiones remotas
 SELECT dblink_disconnect('db1_connection');
