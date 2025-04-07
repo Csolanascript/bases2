@@ -38,37 +38,34 @@ echo "Creando tablas en el esquema 'esquema_videojuegos_en'..."
 docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
 -- Company
 CREATE TABLE esquema_videojuegos_en.Company (
-    Name VARCHAR(255) NOT NULL,
-    Director VARCHAR(255),
-    CreatedAt DATE,
-    Country VARCHAR(255),
-    License VARCHAR(255),
-    Type VARCHAR(255),  
-    PRIMARY KEY (Name),
+    Name VARCHAR(255) PRIMARY KEY,
+    Director VARCHAR(255) NOT NULL,
+    CreatedAt DATE NOT NULL,
+    Country VARCHAR(255) NOT NULL,
+    License VARCHAR(255) NOT NULL,
+    Type VARCHAR(255) NOT NULL,
     CONSTRAINT chk_company_type CHECK (Type IN ('Desarrolladora', 'Fabricante'))
 );
 
 -- Platform
 CREATE TABLE esquema_videojuegos_en.Platform (
-    Name VARCHAR(255) NOT NULL,
-    ReleaseDate DATE,
-    SalesVolume INT,
-    Manufacturer VARCHAR(255),
-    Generation VARCHAR(255),
-    PRIMARY KEY (Name),
+    Name VARCHAR(255) PRIMARY KEY,
+    ReleaseDate DATE NOT NULL,
+    SalesVolume INT NOT NULL,
+    Manufacturer VARCHAR(255) NOT NULL,
+    Generation VARCHAR(255) NOT NULL,
     FOREIGN KEY (Manufacturer) REFERENCES esquema_videojuegos_en.Company(Name)
 );
 
 -- Videogame
 CREATE TABLE esquema_videojuegos_en.Videogame (
-    Name VARCHAR(255) NOT NULL,
-    Developer VARCHAR(255),
-    Console VARCHAR(255),
-    Price NUMERIC(10, 2),
-    ReleaseDate DATE,
-    Rating INT,
-    Genres VARCHAR(255),
-    PRIMARY KEY (Name),
+    Name VARCHAR(255) PRIMARY KEY,
+    Developer VARCHAR(255) NOT NULL,
+    Console VARCHAR(255) NOT NULL,
+    Price NUMERIC(10, 2) NOT NULL,
+    ReleaseDate DATE NOT NULL,
+    Rating INT NOT NULL,
+    Genres VARCHAR(255) NOT NULL,
     FOREIGN KEY(Developer) REFERENCES esquema_videojuegos_en.Company(Name) ON DELETE CASCADE,
     FOREIGN KEY(Console) REFERENCES esquema_videojuegos_en.Platform(Name) ON DELETE CASCADE,
     CONSTRAINT chk_rating CHECK (Rating BETWEEN 0 AND 10),
@@ -77,17 +74,16 @@ CREATE TABLE esquema_videojuegos_en.Videogame (
 
 -- Account
 CREATE TABLE esquema_videojuegos_en.Account (
-    NickName VARCHAR(255) NOT NULL,
-    RegisteredAt DATE,
-    Name VARCHAR(255),
-    Email VARCHAR(255),
-    Country VARCHAR(255),
-    BalanceAmount NUMERIC(10, 2),
-    MembershipType VARCHAR(255),
+    NickName VARCHAR(255) PRIMARY KEY,
+    RegisteredAt DATE NOT NULL,
+    Name VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    Country VARCHAR(255) NOT NULL,
+    BalanceAmount NUMERIC(10, 2) NOT NULL,
+    MembershipType VARCHAR(255) NOT NULL,
     ExpiresAt DATE,
     AutoRenew BOOLEAN,
-    AdsPerSession INTEGER,
-    PRIMARY KEY (NickName),
+    AdsPerSession INTEGER NOT NULL,
     CONSTRAINT chk_membership_type CHECK (MembershipType IN ('premium', 'base')),
     CONSTRAINT chk_ads_for_premium CHECK (
         (MembershipType = 'premium' AND AdsPerSession = 0) OR MembershipType != 'premium'
@@ -101,8 +97,8 @@ CREATE TABLE esquema_videojuegos_en.Account (
 CREATE TABLE esquema_videojuegos_en.GameOwnership (
     NickName VARCHAR(255),
     Videogame VARCHAR(255),
-    PurchasedAt DATE,
-    TotalPlaytime INT,
+    PurchasedAt DATE NOT NULL,
+    TotalPlaytime INT NOT NULL,
     PRIMARY KEY (NickName, Videogame),
     FOREIGN KEY (NickName) REFERENCES esquema_videojuegos_en.Account(NickName) ON DELETE CASCADE,
     FOREIGN KEY (Videogame) REFERENCES esquema_videojuegos_en.Videogame(Name) ON DELETE CASCADE

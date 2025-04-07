@@ -44,43 +44,43 @@ docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
 -- Compañía
 CREATE TABLE esquema_videojuegos.Compania (
     Nombre VARCHAR(300) PRIMARY KEY,
-    Director VARCHAR(300),
-    FechaCreacion DATE,
-    Pais VARCHAR(300)
+    Director VARCHAR(300) NOT NULL,
+    FechaCreacion DATE NOT NULL,
+    Pais VARCHAR(300) NOT NULL
 );
 
 -- Desarrolladora
 CREATE TABLE esquema_videojuegos.Desarrolladora (
     Nombre VARCHAR(300) PRIMARY KEY,
-    LicenciaCopyright VARCHAR(300),
+    LicenciaCopyright VARCHAR(300) NOT NULL,
     FOREIGN KEY(Nombre) REFERENCES esquema_videojuegos.Compania(Nombre)
 );
 
 -- Fabricante
 CREATE TABLE esquema_videojuegos.Fabricante (
     Nombre VARCHAR(300) PRIMARY KEY,
-    LicenciaFabricacion VARCHAR(300),
+    LicenciaFabricacion VARCHAR(300) NOT NULL,
     FOREIGN KEY(Nombre) REFERENCES esquema_videojuegos.Compania(Nombre)
 );
 
 -- Consola
 CREATE TABLE esquema_videojuegos.Consola (
     Nombre VARCHAR(300) PRIMARY KEY,
-    FechaLanzamiento DATE,
-    NumVentas INTEGER,
-    Fabricante VARCHAR(300),
-    Generacion VARCHAR(300),
+    FechaLanzamiento DATE NOT NULL,
+    NumVentas INTEGER NOT NULL,
+    Fabricante VARCHAR(300) NOT NULL,
+    Generacion VARCHAR(300) NOT NULL,
     FOREIGN KEY(Fabricante) REFERENCES esquema_videojuegos.Fabricante(Nombre)
 );
 
 -- Videojuego
 CREATE TABLE esquema_videojuegos.Videojuego (
     Nombre VARCHAR(300) PRIMARY KEY,
-    Desarrolladora VARCHAR(300),
-    Consola VARCHAR(300),
-    Precio NUMERIC(10,2),
-    FechaLanzamiento DATE,
-    Puntuacion NUMERIC(3,1),
+    Desarrolladora VARCHAR(300) NOT NULL,
+    Consola VARCHAR(300) NOT NULL,
+    Precio NUMERIC(10,2) NOT NULL,
+    FechaLanzamiento DATE NOT NULL,
+    Puntuacion NUMERIC(3,1) NOT NULL,
     FOREIGN KEY(Desarrolladora) REFERENCES esquema_videojuegos.Desarrolladora(Nombre),
     FOREIGN KEY(Consola) REFERENCES esquema_videojuegos.Consola(Nombre),
     CHECK (Puntuacion >= 0 AND Puntuacion <= 10),
@@ -89,8 +89,8 @@ CREATE TABLE esquema_videojuegos.Videojuego (
 
 -- GeneroVideojuego
 CREATE TABLE esquema_videojuegos.GeneroVideojuego (
-    Videojuego VARCHAR(300),
-    Genero VARCHAR(300),
+    Videojuego VARCHAR(300) NOT NULL,
+    Genero VARCHAR(300) NOT NULL,
     PRIMARY KEY (Videojuego, Genero),
     FOREIGN KEY(Videojuego) REFERENCES esquema_videojuegos.Videojuego(Nombre)
 );
@@ -98,37 +98,37 @@ CREATE TABLE esquema_videojuegos.GeneroVideojuego (
 -- Usuario
 CREATE TABLE esquema_videojuegos.Usuario (
     NombreUsuario VARCHAR(300) PRIMARY KEY,
-    FechaCreacion DATE,
-    Nombre VARCHAR(300),
-    Apellido1 VARCHAR(300),
-    Apellido2 VARCHAR(300),
-    Email VARCHAR(300),
-    Pais VARCHAR(300),
-    Saldo NUMERIC(10,2),
-    EsPremium BOOLEAN
+    FechaCreacion DATE NOT NULL,
+    Nombre VARCHAR(300) NOT NULL,
+    Apellido1 VARCHAR(300) NOT NULL,
+    Apellido2 VARCHAR(300) NOT NULL,
+    Email VARCHAR(300) NOT NULL,
+    Pais VARCHAR(300) NOT NULL,
+    Saldo NUMERIC(10,2) NOT NULL,
+    EsPremium BOOLEAN NOT NULL
 );
 
 -- Usuario Premium
 CREATE TABLE esquema_videojuegos.UsuarioPremium (
     NombreUsuario VARCHAR(300) PRIMARY KEY,
-    FechaCaducidad DATE,
-    RenovacionAutomatica BOOLEAN,
+    FechaCaducidad DATE NOT NULL,
+    RenovacionAutomatica BOOLEAN NOT NULL,
     FOREIGN KEY(NombreUsuario) REFERENCES esquema_videojuegos.Usuario(NombreUsuario)
 );
 
 -- Usuario Corriente
 CREATE TABLE esquema_videojuegos.UsuarioCorriente (
     NombreUsuario VARCHAR(300) PRIMARY KEY,
-    NumeroAnunciosPorSesion INTEGER,
+    NumeroAnunciosPorSesion INTEGER NOT NULL,
     FOREIGN KEY(NombreUsuario) REFERENCES esquema_videojuegos.Usuario(NombreUsuario)
 );
 
 -- PosesionVideojuego
 CREATE TABLE esquema_videojuegos.PosesionVideojuego (
-    NombreUsuario VARCHAR(300),
-    Videojuego VARCHAR(300),
-    FechaCompra DATE,
-    NumHorasJugadas INTEGER,
+    NombreUsuario VARCHAR(300) NOT NULL,
+    Videojuego VARCHAR(300) NOT NULL,
+    FechaCompra DATE NOT NULL,
+    NumHorasJugadas INTEGER NOT NULL,
     PRIMARY KEY (NombreUsuario, Videojuego),
     FOREIGN KEY(NombreUsuario) REFERENCES esquema_videojuegos.Usuario(NombreUsuario),
     FOREIGN KEY(Videojuego) REFERENCES esquema_videojuegos.Videojuego(Nombre)
