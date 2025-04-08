@@ -1,14 +1,83 @@
-#!/bin/bash
-# Script: docker_postgres_videojuegos_poblar_db2.sh
-# Objetivo: Poblar las tablas del esquema 'esquema_videojuegos_en' en la base de datos 'db2'
+-- Crear esquema si no existe
+CREATE SCHEMA IF NOT EXISTS esquema_videojuegos_en;
 
-CONTAINER_NAME="p3-postgres-1"  # Nombre del contenedor Docker
-DATABASE="db2"                  # Base de datos destino
-ADMIN_USER="postgres"           # Usuario administrador
+-- Borrar tablas existentes en orden de dependencias
+DROP TABLE IF EXISTS esquema_videojuegos_en.GameOwnership CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Videogame CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Platform CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Account CASCADE;
+DROP TABLE IF EXISTS esquema_videojuegos_en.Company CASCADE;
 
-echo "Ejecutando script dentro del contenedor '$CONTAINER_NAME' para poblar las tablas en inglés en 'db2'..."
+-- Crear tablas
 
-docker exec -i $CONTAINER_NAME psql -U $ADMIN_USER -d $DATABASE -c "
+-- Company
+CREATE TABLE esquema_videojuegos_en.Company (
+    Name VARCHAR(100) PRIMARY KEY,
+    Director VARCHAR(100) NOT NULL,
+    CreatedAt DATE NOT NULL,
+    Country VARCHAR(100) NOT NULL,
+    License VARCHAR(500) NOT NULL,
+    Type VARCHAR(50) NOT NULL,
+    CONSTRAINT chk_company_type CHECK (Type IN ('Desarrolladora', 'Fabricante'))
+);
+
+-- Platform
+CREATE TABLE esquema_videojuegos_en.Platform (
+    Name VARCHAR(100) PRIMARY KEY,
+    ReleaseDate DATE NOT NULL,
+    SalesVolume INT NOT NULL,
+    Manufacturer VARCHAR(100) NOT NULL,
+    Generation VARCHAR(50) NOT NULL,
+    FOREIGN KEY (Manufacturer) REFERENCES esquema_videojuegos_en.Company(Name)
+);
+
+-- Videogame
+CREATE TABLE esquema_videojuegos_en.Videogame (
+    Name VARCHAR(100) PRIMARY KEY,
+    Developer VARCHAR(100) NOT NULL,
+    Console VARCHAR(100) NOT NULL,
+    Price NUMERIC(10, 2) NOT NULL,
+    ReleaseDate DATE NOT NULL,
+    Rating INT NOT NULL,
+    Genres VARCHAR(250) NOT NULL,
+    FOREIGN KEY(Developer) REFERENCES esquema_videojuegos_en.Company(Name) ON DELETE CASCADE,
+    FOREIGN KEY(Console) REFERENCES esquema_videojuegos_en.Platform(Name) ON DELETE CASCADE,
+    CONSTRAINT chk_rating CHECK (Rating BETWEEN 0 AND 10),
+    CONSTRAINT chk_price CHECK (Price >= 0)
+);
+
+-- Account
+CREATE TABLE esquema_videojuegos_en.Account (
+    NickName VARCHAR(100) PRIMARY KEY,
+    RegisteredAt DATE NOT NULL,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Country VARCHAR(100) NOT NULL,
+    BalanceAmount NUMERIC(10, 2) NOT NULL,
+    MembershipType VARCHAR(100) NOT NULL,
+    ExpiresAt DATE,
+    AutoRenew BOOLEAN,
+    AdsPerSession INTEGER NOT NULL,
+    CONSTRAINT chk_membership_type CHECK (MembershipType IN ('premium', 'base')),
+    CONSTRAINT chk_ads_for_premium CHECK (
+        (MembershipType = 'premium' AND AdsPerSession = 0) OR MembershipType != 'premium'
+    ),
+    CONSTRAINT chk_base_account CHECK (
+        (MembershipType = 'base' AND ExpiresAt IS NULL AND AutoRenew IS NULL) OR MembershipType != 'base'
+    )
+);
+
+-- GameOwnership
+CREATE TABLE esquema_videojuegos_en.GameOwnership (
+    NickName VARCHAR(100),
+    Videogame VARCHAR(100),
+    PurchasedAt DATE NOT NULL,
+    TotalPlaytime INT NOT NULL,
+    PRIMARY KEY (NickName, Videogame),
+    FOREIGN KEY (NickName) REFERENCES esquema_videojuegos_en.Account(NickName) ON DELETE CASCADE,
+    FOREIGN KEY (Videogame) REFERENCES esquema_videojuegos_en.Videogame(Name) ON DELETE CASCADE
+);
+
 -- Insertar datos en la tabla 'Company'
 INSERT INTO esquema_videojuegos_en.Company (Name, Director, CreatedAt, Country, License, Type) VALUES
 ('Ubisoft', 'Yves Guillemot', '1986-03-28', 'France', 'Copyright 2025 Ubisoft Entertainment', 'Desarrolladora'),
@@ -60,6 +129,3 @@ SELECT * FROM esquema_videojuegos_en.Platform;
 SELECT * FROM esquema_videojuegos_en.Company;
 SELECT * FROM esquema_videojuegos_en.Account;
 SELECT * FROM esquema_videojuegos_en.GameOwnership;
-"
-
-echo "Tablas pobladas correctamente en 'db2'."

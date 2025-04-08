@@ -273,3 +273,43 @@ VALUES ('ES000000000000000000000000000001', 101);
 -- y actualiza el tipo de cuenta a "AHORRO" en la tabla Cuenta
 INSERT INTO VistaCuentaAhorro (iban, interes)
 VALUES ('ES000000000000000000000000000002', 2.50);
+
+---------------------------------------------------------------------
+-- Sentencias SELECT para verificar el contenido de cada vista
+---------------------------------------------------------------------
+
+-- Verificar Titular_Unificado
+SELECT * FROM Titular_Unificado;
+
+-- Verificar VistaCliente
+SELECT * FROM VistaCliente;
+
+-- Verificar VistaCuenta
+SELECT * FROM VistaCuenta;
+
+-- Verificar VistaCuentaCliente
+SELECT * FROM VistaCuentaCliente;
+
+-- Verificar VistaCuentaAhorro
+SELECT * FROM VistaCuentaAhorro;
+
+-- Verificar VistaCuentaCorriente
+SELECT * FROM VistaCuentaCorriente;
+
+-- Verificar VistaSucursal
+SELECT * FROM VistaSucursal;
+
+-- Verificar VistaOperacionBancaria
+SELECT * FROM VistaOperacionBancaria;
+
+-- Verificar VistaOpefectivo
+SELECT * FROM VistaOpefectivo;
+
+-- Verificar VistaTransferencia
+SELECT * FROM VistaTransferencia;
+
+-- Verificar CODPOSTAL
+SELECT * FROM CODPOSTAL;
+
+-- Verificar CODENTIDADES
+SELECT * FROM CODENTIDADES;

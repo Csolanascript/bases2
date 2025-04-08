@@ -86,17 +86,17 @@ END;
 /
 
 ---------------------------------------------------------------------
--- Creación de las vistas
+-- Creaciï¿½n de las vistas
 ---------------------------------------------------------------------
 
--- Vista para Titular_Unificado (accediendo vía dblink)
+-- Vista para Titular_Unificado (accediendo vï¿½a dblink)
 CREATE OR REPLACE VIEW Titular_Unificado AS
 SELECT 
     t.DNI,
     t.NOMBRE,
     t.APELLIDO1,
     t.APELLIDO2,
-    d.CALLE || ', ' || d.CIUDAD || ', Nº ' || d.NUMERO || ', Piso ' || d.PISO AS DIRECCION_COMPLETA,
+    d.CALLE || ', ' || d.CIUDAD || ', Nï¿½ ' || d.NUMERO || ', Piso ' || d.PISO AS DIRECCION_COMPLETA,
     t.TELEFONO,
     t.FECHA_NACIMIENTO
 FROM TITULAR@SCHEMA2BD2 t
@@ -248,43 +248,3 @@ SELECT * FROM CODPOSTAL@SCHEMA2BD2;
 
 CREATE VIEW CODENTIDADES AS 
 SELECT * FROM CODENTIDADES@SCHEMA2BD2;
-
----------------------------------------------------------------------
--- Sentencias SELECT para verificar el contenido de cada vista
----------------------------------------------------------------------
-
--- Verificar Titular_Unificado
-SELECT * FROM Titular_Unificado;
-
--- Verificar VistaCliente
-SELECT * FROM VistaCliente;
-
--- Verificar VistaCuenta
-SELECT * FROM VistaCuenta;
-
--- Verificar VistaCuentaCliente
-SELECT * FROM VistaCuentaCliente;
-
--- Verificar VistaCuentaAhorro
-SELECT * FROM VistaCuentaAhorro;
-
--- Verificar VistaCuentaCorriente
-SELECT * FROM VistaCuentaCorriente;
-
--- Verificar VistaSucursal
-SELECT * FROM VistaSucursal;
-
--- Verificar VistaOperacionBancaria
-SELECT * FROM VistaOperacionBancaria;
-
--- Verificar VistaOpefectivo
-SELECT * FROM VistaOpefectivo;
-
--- Verificar VistaTransferencia
-SELECT * FROM VistaTransferencia;
-
--- Verificar CODPOSTAL
-SELECT * FROM CODPOSTAL;
-
--- Verificar CODENTIDADES
-SELECT * FROM CODENTIDADES;
