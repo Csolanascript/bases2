@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "java",
+        "name": "Iniciar Test3",
+        "request": "launch",
+        "mainClass": "uni.Test3",
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",
+        "vmArgs": "-cp .:bin:lib/*"
+      }
+    ]
+  }
+  
