@@ -5,6 +5,21 @@
              version="2.0">
   <persistence-unit name="UnidadPersistenciaBanco" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    
+    <!-- Explicitly list all entity classes -->
+    <class>uni.Cuenta</class>
+    <class>uni.Cliente</class>
+    <class>uni.Operacion</class>
+    <class>uni.OperacionEfectivo</class>
+    <class>uni.Transferencia</class>
+    <class>uni.Oficina</class>
+    <class>uni.CuentaCorriente</class>
+    <class>uni.CuentaAhorro</class>
+    <class>uni.Direccion</class>
+    
+    <!-- Disable automatic scanning - critical for bytecode compatibility -->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    
     <properties>
       <!-- Configuración de Hibernate para Oracle -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />

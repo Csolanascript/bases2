@@ -23,12 +23,11 @@ public class Oficina {
     @Column(name = "TELEFONO")
     private String telefono;
     
-    @OneToMany(mappedBy = "Oficina")
+    @OneToMany(mappedBy = "oficina")  // Change from "Oficina" to "oficina"
     private List<OperacionEfectivo> operaciones = new ArrayList<>();
-
-    @OneToMany(mappedBy = "Oficina")
-    private List<CuentaCorriente> cuentas = new ArrayList<>();
     
+    @OneToMany(mappedBy = "oficina")  // Change from "Oficina" to field name in CuentaCorriente
+    private List<CuentaCorriente> cuentas = new ArrayList<>();
     // No-arg constructor required by JPA
     public Oficina() {
     }

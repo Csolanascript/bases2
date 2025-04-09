@@ -11,18 +11,18 @@
         <properties>
             <!-- Muestra por consola las sentencias SQL generadas -->
             <property name="hibernate.show_sql" value="true"/>
-            
             <!-- Estrategia de creación/actualización del esquema: create, update, validate, etc. -->
             <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <!-- Dialecto para Oracle (ajústalo si tu versión lo requiere) -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
             
-            <!-- Conexión a Oracle -->
+            <!-- Conexión a Oracle XE: actualiza usuario y contraseña para que coincidan con docker-compose -->
             <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE"/>
-            <property name="javax.persistence.jdbc.user" value="bob"/>
-            <property name="javax.persistence.jdbc.password" value="bobp"/>
+            <property name="javax.persistence.jdbc.user" value="admin"/>
+            <property name="javax.persistence.jdbc.password" value="admin"/>
             
-            <!-- 
-            Si quisieras usar MySQL, puedes comentar lo de arriba y descomentar lo siguiente:
+            <!-- Si quisieras usar MySQL, comenta lo anterior y descomenta lo siguiente:
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/hablamospBD"/>
             <property name="javax.persistence.jdbc.user" value="hablamos"/>

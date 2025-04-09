@@ -1,24 +1,25 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Compilar",
-        "type": "shell",
-        "command": "javac",
-        "args": [
-          "-cp",
-          ".:bin:lib/*",
-          "-d",
-          "bin",
-          "src/uni/*.java",
-          "src/uni/**/*.java"
-        ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": "$javac"
-      }
-    ]
-  }
-  
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compilar",
+      "type": "shell",
+      "command": "javac",
+      "args": [
+        "-source", "1.8",
+        "-target", "1.8",
+        "-cp",
+        ".:bin:lib/*",
+        "-d",
+        "bin",
+        "src/uni/*.java",
+        "src/uni/**/*.java"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$javac"
+    }
+  ]
+}
