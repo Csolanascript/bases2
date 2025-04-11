@@ -1,0 +1,7 @@
+La tercera (y última) parte de la práctica implica proponer al menos 3 consultas de
+ejemplo interesantes (no triviales) y formularlas utilizando JPQL y alguna o varias
+de las opciones siguientes:
+1. Criteria API
+2. SQL nativoCarlos Solana Melero    872816
+Daniel Simón Gayán      870984
+Diego  Mateo Llorente   873338

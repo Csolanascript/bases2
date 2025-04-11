@@ -25,7 +25,7 @@ public class Cliente {
 
     @Id
     @Column(name = "DNI")
-    private String DNI;
+    private int DNI;
 
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "clientes_cuentas",
@@ -42,8 +42,8 @@ public class Cliente {
     @Column(name = "Edad", nullable = false)
     private int Edad;
 
-    @Column(name = "Direccion", nullable = false)
-    private String Direccion;
+    @ManyToOne
+    private Direccion Direccion;
 
     @Column(name = "Email", nullable = true)
     private String Email;
@@ -55,8 +55,8 @@ public class Cliente {
     public Cliente() {}
 
     // Constructor completo
-    public Cliente(String dni, String nombre, String apellidos, int edad, 
-                   String direccion, String email, String telefono) {
+    public Cliente(int dni, String nombre, String apellidos, int edad, 
+                   Direccion direccion, String email, String telefono) {
         this.DNI = dni;
         this.Nombre = nombre;
         this.Apellidos = apellidos;
@@ -67,11 +67,11 @@ public class Cliente {
     }
 
     // Getters y Setters
-    public String getDni() {
+    public int getDni() {
         return DNI;
     }
 
-    public void setDni(String dni) {
+    public void setDni(int dni) {
         this.DNI = dni;
     }
 
@@ -99,11 +99,11 @@ public class Cliente {
         this.Edad = edad;
     }
 
-    public String getDireccion() {
+    public Direccion getDireccion() {
         return Direccion;
     }
 
-    public void setDireccion(String direccion) {
+    public void setDireccion(Direccion direccion) {
         this.Direccion = direccion;
     }
 

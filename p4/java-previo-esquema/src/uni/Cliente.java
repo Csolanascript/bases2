@@ -2,76 +2,156 @@ package uni;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.ManyToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+
 
 @Entity
 @Table(name = "Cliente")
 public class Cliente {
-	
-	@Id
-	@Column(name = "DNI")
-	private Long DNI;
-	
-	@Column(name = "Nombre")
-	private String Nombre;
 
-	@Column(name = "Apellidos")
-	private String Apellidos;
+    @Id
+    @Column(name = "dni")
+    private Integer dni;
 
-	@Column(name = "Edad")
-	private int Edad;
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "clientes_cuentas",
+            joinColumns = @JoinColumn(name = "cliente_dni"),
+            inverseJoinColumns = @JoinColumn(name = "cuenta_id"))
+    private List<Cuenta> Cuentas = new ArrayList<>();
 
-	@Column(name = "Direccion")
-	private String Direccion;
+    @Column(name = "nombre", nullable = false)
+    private String nombre;
 
-	@Column(name = "Email", nullable = true)
-	private String Email;
+    @Column(name = "apellidos", nullable = false)
+    private String apellidos;
 
-	@Column(name = "Telefono")
-	private String Telefono;
+    @Column(name = "edad", nullable = false)
+    private int edad;
 
+    @Column(name = "direccion", nullable = false)
+    private String direccion;
 
+    @Column(name = "email", nullable = true)
+    private String email;
 
+    @Column(name = "telefono", nullable = false)
+    private String telefono;
 
-	public Long getId() {
-		return id;
-	}
+    // Constructor vacío requerido por JPA
+    public Cliente() {}
 
-	public String getNombre() {
-		return nombre;
-	}
+    // Constructor completo
+    public Cliente(Integer dni, String nombre, String apellidos, int edad, 
+                   String direccion, String email, String telefono) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.edad = edad;
+        this.direccion = direccion;
+        this.email = email;
+        this.telefono = telefono;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
+    // Getters y Setters
+    public Integer getDni() {
+        return dni;
+    }
 
-	
+    public void setDni(Integer dni) {
+        this.dni = dni;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Cliente other = (Cliente) obj;
-		if (DNI == null) {
-			if (other.DNI != null)
-				return false;
-		} else if (!DNI.equals(other.DNI))
-			return false;
-		return true;
-	}
-	
-	
-	public String toString() {
-		return nombre;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+	public List<Cuenta> getCuentas() {
+        return Cuentas;
+    }
+
+    public void setCuentas(List<Cuenta> cuentas) {
+        this.Cuentas = cuentas;
+    }
+
+    public void addCuenta(Cuenta cuenta) {
+        Cuentas.add(cuenta);
+        cuenta.getClientes().add(this);
+    }
+
+    public void removeCuenta(Cuenta cuenta) {
+        Cuentas.remove(cuenta);
+        cuenta.getClientes().remove(this);
+    }
+
+    // Método toString para facilitar debugging
+    @Override
+    public String toString() {
+        return "Cliente{" +
+               "dni=" + dni +
+               ", nombre='" + nombre + '\'' +
+               ", apellidos='" + apellidos + '\'' +
+               ", edad=" + edad +
+               ", direccion='" + direccion + '\'' +
+               ", email='" + email + '\'' +
+               ", telefono='" + telefono + '\'' +
+               '}';
+    }
 }

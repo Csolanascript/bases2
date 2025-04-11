@@ -30,6 +30,9 @@ public class Cuenta {
     @OneToMany(mappedBy = "cuentaOrigen")
     private Set<Operacion> operaciones = new HashSet<>();
 
+    @OneToMany(mappedBy = "cuentaDestino")
+    private Set<Transferencia> transferencias = new HashSet<>();
+
     // Constructor vacío requerido por JPA
     public Cuenta() {}
 
@@ -90,6 +93,14 @@ public class Cuenta {
         this.operaciones = operaciones;
     }
 
+    public Set<Transferencia> getTransferencias() {
+        return transferencias;
+    }
+
+    public void setTransferencia(Set<Transferencia> transferencias) {
+        this.transferencias = transferencias;
+    }
+
     // Métodos utilitarios
     public void addCliente(Cliente cliente) {
         clientes.add(cliente);
@@ -110,6 +121,17 @@ public class Cuenta {
         operaciones.remove(op);
         op.setCuentaOrigen(null);
     }
+
+    public void addTransferencia(Transferencia transferencia) {
+        transferencias.add(transferencia);
+        transferencia.setCuentaDestino(this);
+    }
+
+    public void removeTransferencia(Transferencia transferencia) {
+        transferencias.remove(transferencia);
+        transferencia.setCuentaDestino(null);
+    }
+
 
     @Override
     public String toString() {

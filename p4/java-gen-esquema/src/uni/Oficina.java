@@ -71,6 +71,14 @@ public class Oficina {
         this.operaciones = operaciones;
     }
 
+    public List<CuentaCorriente> getCuentas() {
+        return cuentas;
+    }
+
+    public void setCuentas(List<CuentaCorriente> cuentas) {
+        this.cuentas = cuentas;
+    }
+
     @Override
     public String toString() {
         return "Oficina{" +

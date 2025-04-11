@@ -8,23 +8,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "OPERACION_EFECTIVO")
-public class OperacionEfectivo extends OperacionBancaria {
+@Table(name = "Retirada")
+public class Retirada extends OperacionBancaria {
     
-    public enum TipoOperacionEfectivo {
-        INGRESO, RETIRADA
-    }
     
-    @Column(name = "TIPO_OPERACION_EFECTIVO", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TipoOperacionEfectivo tipoOperacion;
     
 
     @ManyToOne(optional = false)
-    private Sucursal oficina;
+    private Sucursal codigoSucursal;
     
     // Constructors
-    public OperacionEfectivo() {
+    public Retirada() {
         super();
     }
     
