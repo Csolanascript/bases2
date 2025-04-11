@@ -1,5 +1,7 @@
 package uni;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,50 +10,42 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "OPERACION_EFECTIVO")
-public class OperacionEfectivo extends OperacionBancaria {
-    
-    public enum TipoOperacionEfectivo {
-        INGRESO, RETIRADA
-    }
-    
-    @Column(name = "TIPO_OPERACION_EFECTIVO", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TipoOperacionEfectivo tipoOperacion;
-    
+@Table(name = "OperacionEfectivo")
+public class OperacionEfectivo extends Operacion {    
 
     @ManyToOne(optional = false)
-    private Sucursal oficina;
+    private Oficina oficina;
     
-    // Constructors
+
     public OperacionEfectivo() {
-        super();
+    }
+
+    // Constructors
+    public OperacionEfectivo(int codigoOperacion, Date fechaHora, double cantidad, Cuenta cuentaOrigen, String descripcion) {
+        super(codigoOperacion, fechaHora, cantidad, cuentaOrigen, descripcion);
     }
     
-    // Getters and setters
-    public TipoOperacionEfectivo getTipoOperacion() {
-        return tipoOperacion;
-    }
-    
-    public void setTipoOperacion(TipoOperacionEfectivo tipoOperacion) {
-        this.tipoOperacion = tipoOperacion;
-    }
-    
-    public Sucursal getOficina() {
+    public Oficina getOficina() {
         return oficina;
     }
     
-    public void setOficina(Sucursal oficina) {
+    public void setOficina(Oficina oficina) {
         this.oficina = oficina;
     }
     
     @Override
     public String toString() {
-        return "OperacionEfectivo [tipoOperacion=" + tipoOperacion + 
-               ", oficina=" + oficina.getCodigoOficina() +
-               ", getCodigoOperacion()=" + getCodigoOperacion() +
-               ", getFechaHora()=" + getFechaHora() + 
-               ", getCantidad()=" + getCantidad() + 
-               ", getDescripcion()=" + getDescripcion() + "]";
+        String cuentaOrigenIBAN = (getCuentaOrigen() != null) ? getCuentaOrigen().getIBAN() : "null";
+        String oficinaCodigo = (oficina != null) ? oficina.getCodigoOficina() : "null";
+    
+        return "OperacionEfectivo {" +
+               "CodigoOperacion=" + getCodigoOperacion() +
+               ", FechaHora=" + getFechaHora() +
+               ", Cantidad=" + getCantidad() +
+               ", CuentaOrigen=" + cuentaOrigenIBAN +
+               ", Oficina=" + oficinaCodigo +
+               (getDescripcion() != null ? ", Descripcion='" + getDescripcion() + '\'' : "") +
+               '}';
     }
+    
 }

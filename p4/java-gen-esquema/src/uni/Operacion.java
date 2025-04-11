@@ -13,7 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "OPERACION")
+@Table(name = "Operacion")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Operacion {
     
@@ -29,6 +29,7 @@ public abstract class Operacion {
     @Column(name = "CANTIDAD", nullable = false)
     private double cantidad;
     
+    @Id
     @ManyToOne(optional = false)
     private Cuenta cuentaOrigen;
     
@@ -38,6 +39,15 @@ public abstract class Operacion {
     // Constructors
     public Operacion() {
     }
+
+    public Operacion(int codigoOperacion, Date fechaHora, double cantidad, Cuenta cuentaOrigen, String descripcion) {
+        this.codigoOperacion = codigoOperacion;
+        this.fechaHora = fechaHora;
+        this.cantidad = cantidad;
+        this.cuentaOrigen = cuentaOrigen;
+        this.descripcion = descripcion;
+    }
+    
     
     // Getters and setters
     public int getCodigoOperacion() {
@@ -82,7 +92,7 @@ public abstract class Operacion {
     
     @Override
     public String toString() {
-        return "Operación #" + codigoOperacion + 
+        return "Operación: " + codigoOperacion + 
                "\nFecha: " + fechaHora + 
                "\nCantidad: " + cantidad +
                "\nCuenta origen: " + cuentaOrigen.getIBAN() +

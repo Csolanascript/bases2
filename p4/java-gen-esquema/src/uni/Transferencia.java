@@ -1,12 +1,26 @@
 package uni;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Operacion")
 public class Transferencia extends Operacion {
     @ManyToOne(optional = false)
     private Cuenta cuentaDestino;
 
     // Constructors
     public Transferencia() {
-        super();
+    }
+
+    public Transferencia(int codigoOperacion, Date fechaHora, double cantidad, Cuenta cuentaOrigen, String descripcion) {
+        super(codigoOperacion, fechaHora, cantidad, cuentaOrigen, descripcion);
     }
     
     // Getters and setters
@@ -20,8 +34,17 @@ public class Transferencia extends Operacion {
     
     @Override
     public String toString() {
-        return "Transferencia [cuentaDestino=" + cuentaDestino + ", getCodigoOperacion()=" + getCodigoOperacion()
-                + ", getFechaHora()=" + getFechaHora() + ", getCantidad()=" + getCantidad() + ", getDescripcion()="
-                + getDescripcion() + "]";
+        String cuentaOrigenIBAN = (getCuentaOrigen() != null) ? getCuentaOrigen().getIBAN() : "null";
+        String cuentaDestinoIBAN = (cuentaDestino != null) ? cuentaDestino.getIBAN() : "null";
+    
+        return "Transferencia {" +
+               "CodigoOperacion=" + getCodigoOperacion() +
+               ", FechaHora=" + getFechaHora() +
+               ", Cantidad=" + getCantidad() +
+               ", CuentaOrigen=" + cuentaOrigenIBAN +
+               ", CuentaDestino=" + cuentaDestinoIBAN +
+               (getDescripcion() != null ? ", Descripcion='" + getDescripcion() + '\'' : "") +
+               '}';
     }
+    
 }

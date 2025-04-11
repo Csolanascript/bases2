@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 
 @Entity
-@Table(name = "Clientes")
+@Table(name = "Cliente")
 public class Cliente {
 
     @Id
@@ -144,14 +144,27 @@ public class Cliente {
     // Método toString para facilitar debugging
     @Override
     public String toString() {
+        StringBuilder cuentasStr = new StringBuilder();
+        for (Cuenta cuenta : Cuentas) {
+            cuentasStr.append(cuenta.getIBAN()).append(", ");
+        }
+    
+        // Elimina la última coma si hay cuentas
+        if (!Cuentas.isEmpty()) {
+            cuentasStr.setLength(cuentasStr.length() - 2);
+        }
+    
         return "Cliente{" +
-               "dni=" + DNI +
-               ", nombre='" + Nombre + '\'' +
-               ", apellidos='" + Apellidos + '\'' +
-               ", edad=" + Edad +
-               ", direccion='" + Direccion + '\'' +
-               ", email='" + Email + '\'' +
-               ", telefono='" + Telefono + '\'' +
+               "DNI=" + DNI +
+               ", Nombre='" + Nombre + '\'' +
+               ", Apellidos='" + Apellidos + '\'' +
+               ", Edad=" + Edad +
+               ", Direccion=" + (Direccion != null ? Direccion.toString() : "null") +
+               ", Email='" + Email + '\'' +
+               ", Telefono='" + Telefono + '\'' +
+               ", Cuentas=[" + cuentasStr +
+               "]" +
                '}';
     }
+    
 }

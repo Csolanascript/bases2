@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 
 
 @Entity
-@Table(name = "Direcciones")
+@Table(name = "Direccion")
 public class Direccion {
 
     @Id

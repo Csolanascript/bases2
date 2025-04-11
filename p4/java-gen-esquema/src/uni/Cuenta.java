@@ -24,7 +24,7 @@ public class Cuenta {
     @Column(name = "Saldo", nullable = false)
     private long Saldo;
 
-    @ManyToMany(mappedBy = "cuentas", cascade = {CascadeType.PERSIST})
+    @ManyToMany(mappedBy = "cuentas", cascade = { CascadeType.PERSIST })
     private Set<Cliente> clientes = new HashSet<>();
 
     @OneToMany(mappedBy = "cuentaOrigen")
@@ -34,7 +34,8 @@ public class Cuenta {
     private Set<Transferencia> transferencias = new HashSet<>();
 
     // Constructor vacío requerido por JPA
-    public Cuenta() {}
+    public Cuenta() {
+    }
 
     // Constructor completo
     public Cuenta(String IBAN, int numerocuenta, Date fechaCreacion, long saldo) {
@@ -102,6 +103,7 @@ public class Cuenta {
     }
 
     // Métodos utilitarios
+
     public void addCliente(Cliente cliente) {
         clientes.add(cliente);
         cliente.getCuentas().add(this);
@@ -132,14 +134,47 @@ public class Cuenta {
         transferencia.setCuentaDestino(null);
     }
 
-
     @Override
     public String toString() {
+        StringBuilder clientesStr = new StringBuilder();
+        for (Cliente cliente : clientes) {
+            clientesStr.append(cliente.getDni()).append(", ");
+        }
+        if (!clientes.isEmpty()) {
+            clientesStr.setLength(clientesStr.length() - 2); // quitar última coma
+        }
+    
+        StringBuilder operacionesStr = new StringBuilder();
+        for (Operacion op : operaciones) {
+            String cuentaOrigenIBAN = (op.getCuentaOrigen() != null) ? op.getCuentaOrigen().getIBAN() : "null";
+            operacionesStr.append("[Codigo=").append(op.getCodigoOperacion())
+                          .append(", CuentaOrigen=").append(cuentaOrigenIBAN)
+                          .append("], ");
+        }
+        if (!operaciones.isEmpty()) {
+            operacionesStr.setLength(operacionesStr.length() - 2);
+        }
+    
+        StringBuilder transferenciasStr = new StringBuilder();
+        for (Transferencia tr : transferencias) {
+            String cuentaDestinoIBAN = (tr.getCuentaDestino() != null) ? tr.getCuentaDestino().getIBAN() : "null";
+            transferenciasStr.append("[Codigo=").append(tr.getCodigoOperacion())
+                             .append(", CuentaDestino=").append(cuentaDestinoIBAN)
+                             .append("], ");
+        }
+        if (!transferencias.isEmpty()) {
+            transferenciasStr.setLength(transferenciasStr.length() - 2);
+        }
+    
         return "Cuenta{" +
                 "IBAN='" + IBAN + '\'' +
-                ", numerocuenta=" + Numerocuenta +
-                ", fechaCreacion=" + FechaCreacion +
-                ", saldo=" + Saldo +
+                ", Numerocuenta=" + Numerocuenta +
+                ", FechaCreacion=" + FechaCreacion +
+                ", Saldo=" + Saldo +
+                ", Clientes=[" + clientesStr +
+                "], Operaciones=[" + operacionesStr +
+                "], Transferencias=[" + transferenciasStr +
+                "]" +
                 '}';
     }
 }
