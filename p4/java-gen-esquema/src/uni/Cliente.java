@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -25,7 +26,7 @@ public class Cliente {
 
     @Id
     @Column(name = "DNI")
-    private int DNI;
+    private String DNI;
 
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "clientes_cuentas",
@@ -42,7 +43,7 @@ public class Cliente {
     @Column(name = "Edad", nullable = false)
     private int Edad;
 
-    @ManyToOne
+    @ManyToOne()
     private Direccion Direccion;
 
     @Column(name = "Email", nullable = true)
@@ -55,7 +56,7 @@ public class Cliente {
     public Cliente() {}
 
     // Constructor completo
-    public Cliente(int dni, String nombre, String apellidos, int edad, 
+    public Cliente(String dni, String nombre, String apellidos, int edad, 
                    Direccion direccion, String email, String telefono) {
         this.DNI = dni;
         this.Nombre = nombre;
@@ -67,11 +68,11 @@ public class Cliente {
     }
 
     // Getters y Setters
-    public int getDni() {
+    public String getDni() {
         return DNI;
     }
 
-    public void setDni(int dni) {
+    public void setDni(String dni) {
         this.DNI = dni;
     }
 

@@ -1,12 +1,13 @@
 package uni;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,12 +16,12 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "Operacion")
 @Inheritance(strategy = InheritanceType.JOINED)
+@IdClass(OperacionPK.class)
 public abstract class Operacion {
     
     @Id
     @Column(name = "CODIGO_OPERACION")
     private int codigoOperacion;
-    
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FECHA_HORA", nullable = false)
@@ -29,12 +30,17 @@ public abstract class Operacion {
     @Column(name = "CANTIDAD", nullable = false)
     private double cantidad;
     
+    
     @Id
     @ManyToOne(optional = false)
+    @JoinColumn(name = "CUENTA_ORIGEN_IBAN") 
     private Cuenta cuentaOrigen;
     
     @Column(name = "DESCRIPCION")
     private String descripcion;
+
+
+
     
     // Constructors
     public Operacion() {
@@ -99,3 +105,6 @@ public abstract class Operacion {
                (descripcion != null ? "\nDescripción: " + descripcion : "");
     }
 }
+
+
+

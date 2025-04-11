@@ -12,8 +12,7 @@
         ".:bin:lib/*",
         "-d",
         "bin",
-        "src/uni/*.java",
-        "src/uni/**/*.java"
+        "src/uni/*.java"
       ],
       "group": {
         "kind": "build",
