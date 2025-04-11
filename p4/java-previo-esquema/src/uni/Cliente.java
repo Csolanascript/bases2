@@ -31,7 +31,7 @@ public class Cliente {
     @JoinTable(name = "clientes_cuentas",
             joinColumns = @JoinColumn(name = "cliente_dni"),
             inverseJoinColumns = @JoinColumn(name = "cuenta_id"))
-    private List<Cuenta> Cuentas = new ArrayList<>();
+    private List<Cuenta> cuentas = new ArrayList<>();
 
     @Column(name = "nombre", nullable = false)
     private String nombre;

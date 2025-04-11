@@ -8,24 +8,20 @@ public class Transferencia extends OperacionBancaria {
     }
 
     @ManyToOne(optional = false)
-    private Cuenta iban;
+    private Cuenta iban_receptor;
     
     
     // Getters and setters
     public void setCuentaDestino(Cuenta cuentaDestino) {
-        this.cuentaDestino = cuentaDestino;
+        this.iban_receptor = iban_receptor;
     }
     
     public Cuenta getCuentaDestino() {
-        return cuentaDestino;
+        return iban_receptor;
     }
     
     @Override
     public String toString() {
-        return "Transferencia [cuentaDestino=" + cuentaDestino + ", getCodigoOperacion()=" + getCodigoOperacion()
-                + ", getFechaHora()=" + getFechaHora() + ", getCantidad()=" + getCantidad() + ", getDescripcion()="
-                + getDescripcion() + "]";
+        return super.toString() + " Transferencia [CuentaDestino=" + iban_receptor + "]";
     }
-    
-    private Cuenta cuentaDestino;
 }

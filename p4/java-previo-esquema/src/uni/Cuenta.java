@@ -24,17 +24,18 @@ public class Cuenta {
     @Column(name = "saldo", nullable = false)
     private long saldo;
 
-    @ManyToMany(mappedBy = "cuentas", cascade = {CascadeType.PERSIST})
+    @ManyToMany(mappedBy = "cuentas", cascade = { CascadeType.PERSIST })
     private Set<Cliente> clientes = new HashSet<>();
 
     @OneToMany(mappedBy = "iban")
     private Set<OperacionBancaria> operaciones = new HashSet<>();
 
-    @OneToMany(mappedBy = "iban")
+    @OneToMany(mappedBy = "iban_receptor")
     private Set<Transferencia> transferencias = new HashSet<>();
 
     // Constructor vacío requerido por JPA
-    public Cuenta() {}
+    public Cuenta() {
+    }
 
     // Constructor completo
     public Cuenta(String iban, int numero_cuenta, Date fecha_creacion, long saldo) {
@@ -106,21 +107,42 @@ public class Cuenta {
 
     public void addOperacion(OperacionBancaria op) {
         operaciones.add(op);
-        op.setCuentaOrigen(this);
+        op.setIban(this);
     }
 
     public void removeOperacion(OperacionBancaria op) {
         operaciones.remove(op);
-        op.setCuentaOrigen(null);
+        op.setIban(null);
     }
 
     @Override
     public String toString() {
+        String clientesStr = clientes.stream()
+                .map(cliente -> cliente.getDni().toString())
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+
+        String operacionesStr = operaciones.stream()
+                .map(op -> "{codigo=" + op.getCodigo_numerico() +
+                        ", emisor=" + (op.getIban() != null ? op.getIban().getIBAN() : "null") + "}")
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+
+        String transferenciasStr = transferencias.stream()
+                .map(tf -> "{codigo=" + tf.getCodigo_numerico() +
+                        ", emisor=" + (tf.getIban() != null ? tf.getIban() : "null") + "}")
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+
         return "Cuenta{" +
                 "iban='" + iban + '\'' +
                 ", numero_cuenta=" + numero_cuenta +
                 ", fecha_creacion=" + fecha_creacion +
                 ", saldo=" + saldo +
+                ", clientes=[" + clientesStr + "]" +
+                ", operaciones=[" + operacionesStr + "]" +
+                ", transferencias_recibidas=[" + transferenciasStr + "]" +
                 '}';
     }
+
 }

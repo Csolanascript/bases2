@@ -26,4 +26,10 @@ public class Ingreso extends OperacionBancaria {
     public void setCodigoSucursal(Sucursal codigoSucursal) {
         this.codigoSucursal = codigoSucursal;
     }
+
+    
+    @Override
+    public String toString() {
+        return super.toString() + " Ingreso [codigoSucursal=" + codigoSucursal.getCodigo_sucursal() + "]";
+    }
 }

@@ -16,11 +16,15 @@ import javax.persistence.TemporalType;
 @Table(name = "OPERACION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class OperacionBancaria {
-    
+
     @Id
     @Column(name = "codigo_numerico")
     private int codigo_numerico;
-    
+
+    @Id
+    @ManyToOne(optional = false)
+    private Cuenta iban;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha", nullable = false)
     private Date fecha;
@@ -29,34 +33,47 @@ public abstract class OperacionBancaria {
     @Column(name = "hora", nullable = false)
     private Date hora;
 
-    
     @Column(name = "cantidad", nullable = false)
     private double cantidad;
+
     
-    @ManyToOne(optional = false)
-    private Cuenta iban;
-    
-   
-    
+
     // Constructors
     public OperacionBancaria() {
     }
-    
-    // Getters and setters
-    public int getCodigoOperacion() {
-        return codigoOperacion;
+
+    public OperacionBancaria(int codigo_numerico, Date fecha, Date hora, double cantidad, Cuenta iban) {
+        this.codigo_numerico = codigo_numerico;
+        this.fecha = fecha;
+        this.hora = hora;
+        this.cantidad = cantidad;
+        this.iban = iban;
     }
 
-    public void setCodigoOperacion(int codigoOperacion) {
-        this.codigoOperacion = codigoOperacion;
+    // Getters y Setters
+
+    public int getCodigo_numerico() {
+        return codigo_numerico;
     }
 
-    public Date getFechaHora() {
-        return fechaHora;
+    public void setCodigo_numerico(int codigo_numerico) {
+        this.codigo_numerico = codigo_numerico;
     }
 
-    public void setFechaHora(Date fechaHora) {
-        this.fechaHora = fechaHora;
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Date getHora() {
+        return hora;
+    }
+
+    public void setHora(Date hora) {
+        this.hora = hora;
     }
 
     public double getCantidad() {
@@ -67,28 +84,20 @@ public abstract class OperacionBancaria {
         this.cantidad = cantidad;
     }
 
-    public Cuenta getCuentaOrigen() {
-        return cuentaOrigen;
+    public Cuenta getIban() {
+        return iban;
     }
 
-    public void setCuentaOrigen(Cuenta cuentaOrigen) {
-        this.cuentaOrigen = cuentaOrigen;
+    public void setIban(Cuenta iban) {
+        this.iban = iban;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-    
+
     @Override
     public String toString() {
-        return "Operación #" + codigoOperacion + 
-               "\nFecha: " + fechaHora + 
-               "\nCantidad: " + cantidad +
-               "\nCuenta origen: " + cuentaOrigen.getIBAN() +
-               (descripcion != null ? "\nDescripción: " + descripcion : "");
+        return "OperacionBancaria [codigo_numerico=" + codigo_numerico + ", fecha=" + fecha + ", hora=" + hora
+                + ", cantidad=" + cantidad + ", iban=" + iban.getIBAN() + "]";
     }
+
 }

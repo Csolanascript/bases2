@@ -36,13 +36,7 @@ public class Corriente extends Cuenta {
 
     @Override
     public String toString() {
-        return "CuentaCorriente{" +
-                "iban='" + getIBAN() + '\'' +
-                ", numero_cuenta=" + getNumerocuenta() +
-                ", fecha_creacion=" + getFechaCreacion() +
-                ", saldo=" + getSaldo() +
-                ", codigo_sucursal=" + codigo_sucursal +
-                '}';
+        return super.toString() + ", codigo_sucursal=" + codigo_sucursal;
     }
 	
 }

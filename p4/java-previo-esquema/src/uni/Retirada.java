@@ -10,10 +10,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Retirada")
 public class Retirada extends OperacionBancaria {
-    
-    
-    
-
     @ManyToOne(optional = false)
     private Sucursal codigoSucursal;
     
@@ -22,30 +18,17 @@ public class Retirada extends OperacionBancaria {
         super();
     }
     
-    // Getters and setters
-    public TipoOperacionEfectivo getTipoOperacion() {
-        return tipoOperacion;
-    }
-    
-    public void setTipoOperacion(TipoOperacionEfectivo tipoOperacion) {
-        this.tipoOperacion = tipoOperacion;
-    }
     
     public Sucursal getOficina() {
-        return oficina;
+        return codigoSucursal;
     }
     
-    public void setOficina(Sucursal oficina) {
-        this.oficina = oficina;
+    public void setOficina(Sucursal codigoSucursal) {
+        this.codigoSucursal = codigoSucursal;
     }
     
     @Override
     public String toString() {
-        return "OperacionEfectivo [tipoOperacion=" + tipoOperacion + 
-               ", oficina=" + oficina.getCodigoOficina() +
-               ", getCodigoOperacion()=" + getCodigoOperacion() +
-               ", getFechaHora()=" + getFechaHora() + 
-               ", getCantidad()=" + getCantidad() + 
-               ", getDescripcion()=" + getDescripcion() + "]";
+        return super.toString() + " Retirada [Sucursal=" + codigoSucursal + "]";
     }
 }
