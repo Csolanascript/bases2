@@ -5,16 +5,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.GenerationType;
-
 
 @Entity
 @Table(name = "Direccion")
 public class Direccion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "direccion_seq")
+    @SequenceGenerator(name = "direccion_seq", sequenceName = "DIRECCION_SEQ", allocationSize = 1)
     @Column(name = "ID_Direccion")
     private Long ID_Direccion;
 
@@ -28,7 +29,8 @@ public class Direccion {
     private String Ciudad;
 
     // Constructor vacío requerido por JPA
-    public Direccion() {}
+    public Direccion() {
+    }
 
     // Constructor completo
     public Direccion(String Calle, String CodigoPostal, String Ciudad) {

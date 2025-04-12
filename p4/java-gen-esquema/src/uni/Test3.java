@@ -14,6 +14,8 @@ public class Test3 {
     EntityManager em = entityManagerFactory.createEntityManager();
     
     public void prueba() {
+        System.out.println("Hola mundo");
+        /*
         // ----- Create Offices -----
         Oficina o1 = new Oficina();
         o1.setCodigoOficina("1001");
@@ -153,7 +155,7 @@ public class Test3 {
         } finally {
             em.close();
             entityManagerFactory.close();
-        }
+        }*/
     }
     
     public static void main(String[] args) {

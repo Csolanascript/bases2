@@ -34,17 +34,13 @@ public class Transferencia extends Operacion {
     
     @Override
     public String toString() {
-        String cuentaOrigenIBAN = (getCuentaOrigen() != null) ? getCuentaOrigen().getIBAN() : "null";
-        String cuentaDestinoIBAN = (cuentaDestino != null) ? cuentaDestino.getIBAN() : "null";
-    
         return "Transferencia {" +
                "CodigoOperacion=" + getCodigoOperacion() +
                ", FechaHora=" + getFechaHora() +
                ", Cantidad=" + getCantidad() +
-               ", CuentaOrigen=" + cuentaOrigenIBAN +
-               ", CuentaDestino=" + cuentaDestinoIBAN +
                (getDescripcion() != null ? ", Descripcion='" + getDescripcion() + '\'' : "") +
                '}';
     }
+    
     
 }

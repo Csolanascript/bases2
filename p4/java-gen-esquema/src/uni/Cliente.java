@@ -28,11 +28,9 @@ public class Cliente {
     @Column(name = "DNI")
     private String DNI;
 
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "clientes_cuentas",
-            joinColumns = @JoinColumn(name = "cliente_dni"),
-            inverseJoinColumns = @JoinColumn(name = "cuenta_id"))
-    private List<Cuenta> Cuentas = new ArrayList<>();
+
+    @ManyToMany
+    private Set<Cuenta> Cuentas = new HashSet<>();
 
     @Column(name = "Nombre", nullable = false)
     private String Nombre;
@@ -124,11 +122,11 @@ public class Cliente {
         this.Telefono = telefono;
     }
 
-	public List<Cuenta> getCuentas() {
+	public Set<Cuenta> getCuentas() {
         return Cuentas;
     }
 
-    public void setCuentas(List<Cuenta> cuentas) {
+    public void setCuentas(Set<Cuenta> cuentas) {
         this.Cuentas = cuentas;
     }
 
@@ -145,16 +143,6 @@ public class Cliente {
     // Método toString para facilitar debugging
     @Override
     public String toString() {
-        StringBuilder cuentasStr = new StringBuilder();
-        for (Cuenta cuenta : Cuentas) {
-            cuentasStr.append(cuenta.getIBAN()).append(", ");
-        }
-    
-        // Elimina la última coma si hay cuentas
-        if (!Cuentas.isEmpty()) {
-            cuentasStr.setLength(cuentasStr.length() - 2);
-        }
-    
         return "Cliente{" +
                "DNI=" + DNI +
                ", Nombre='" + Nombre + '\'' +
@@ -163,9 +151,8 @@ public class Cliente {
                ", Direccion=" + (Direccion != null ? Direccion.toString() : "null") +
                ", Email='" + Email + '\'' +
                ", Telefono='" + Telefono + '\'' +
-               ", Cuentas=[" + cuentasStr +
-               "]" +
                '}';
     }
+    
     
 }

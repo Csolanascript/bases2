@@ -1,6 +1,8 @@
 package uni;
 
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -24,10 +26,10 @@ public class Oficina {
     private String telefono;
     
     @OneToMany(mappedBy = "oficina")  // Change from "Oficina" to "oficina"
-    private List<OperacionEfectivo> operaciones = new ArrayList<>();
+    private Set<OperacionEfectivo> operaciones = new HashSet<>();
     
     @OneToMany(mappedBy = "oficina")  // Change from "Oficina" to field name in CuentaCorriente
-    private List<CuentaCorriente> cuentas = new ArrayList<>();
+    private Set<CuentaCorriente> cuentas = new HashSet<>();
 
     // No-arg constructor required by JPA
     public Oficina() {
@@ -64,19 +66,19 @@ public class Oficina {
         this.telefono = telefono;
     }
 
-    public List<OperacionEfectivo> getOperaciones() {
+    public Set<OperacionEfectivo> getOperaciones() {
         return operaciones;
     }
 
-    public void setOperaciones(List<OperacionEfectivo> operaciones) {
+    public void setOperaciones(Set<OperacionEfectivo> operaciones) {
         this.operaciones = operaciones;
     }
 
-    public List<CuentaCorriente> getCuentas() {
+    public Set<CuentaCorriente> getCuentas() {
         return cuentas;
     }
 
-    public void setCuentas(List<CuentaCorriente> cuentas) {
+    public void setCuentas(Set<CuentaCorriente> cuentas) {
         this.cuentas = cuentas;
     }
 
@@ -102,33 +104,12 @@ public class Oficina {
 
     @Override
     public String toString() {
-        StringBuilder cuentasStr = new StringBuilder();
-        for (CuentaCorriente cuenta : cuentas) {
-            cuentasStr.append(cuenta.getIBAN()).append(", ");
-        }
-        if (!cuentas.isEmpty()) {
-            cuentasStr.setLength(cuentasStr.length() - 2); // quitar última coma
-        }
-    
-        StringBuilder operacionesStr = new StringBuilder();
-        for (OperacionEfectivo op : operaciones) {
-            String ibanEmisora = (op.getCuentaOrigen() != null) ? op.getCuentaOrigen().getIBAN() : "null";
-            operacionesStr.append("[Codigo=").append(op.getCodigoOperacion())
-                          .append(", CuentaOrigen=").append(ibanEmisora)
-                          .append("], ");
-        }
-        if (!operaciones.isEmpty()) {
-            operacionesStr.setLength(operacionesStr.length() - 2);
-        }
-    
         return "Oficina{" +
                "codigoOficina='" + codigoOficina + '\'' +
                ", direccion='" + direccion + '\'' +
                ", telefono='" + telefono + '\'' +
-               ", cuentas=[" + cuentasStr +
-               "], operaciones=[" + operacionesStr +
-               "]" +
                '}';
     }
+    
     
 }

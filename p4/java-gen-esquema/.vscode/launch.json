@@ -6,7 +6,7 @@
       "name": "Iniciar Test3",
       "request": "launch",
       "mainClass": "uni.Test3",
-      "classpath": ["${workspaceFolder}/bin", "${workspaceFolder}/lib/*"],
+      "classpaths": ["${workspaceFolder}/bin", "${workspaceFolder}/lib/*"],
       "console": "integratedTerminal"
     }
   ]

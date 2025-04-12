@@ -101,9 +101,9 @@ public abstract class Operacion {
         return "Operación: " + codigoOperacion + 
                "\nFecha: " + fechaHora + 
                "\nCantidad: " + cantidad +
-               "\nCuenta origen: " + cuentaOrigen.getIBAN() +
                (descripcion != null ? "\nDescripción: " + descripcion : "");
     }
+    
 }
 
 

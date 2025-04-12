@@ -5,6 +5,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+
+
 @Entity
 @Table(name = "Cuenta")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -24,15 +26,16 @@ public class Cuenta {
     @Column(name = "Saldo", nullable = false)
     private long Saldo;
 
-    @ManyToMany(mappedBy = "cuentas", cascade = { CascadeType.PERSIST })
-    private Set<Cliente> clientes = new HashSet<>();
+    @ManyToMany(mappedBy = "Cuentas")
+    private Set<Cliente> Clientes = new HashSet<>();
+   
 
     @OneToMany(mappedBy = "cuentaOrigen")
     private Set<Operacion> operaciones = new HashSet<>();
-
+/*
     @OneToMany(mappedBy = "cuentaDestino")
     private Set<Transferencia> transferencias = new HashSet<>();
-
+*/
     // Constructor vacío requerido por JPA
     public Cuenta() {
     }
@@ -79,11 +82,11 @@ public class Cuenta {
     }
 
     public Set<Cliente> getClientes() {
-        return clientes;
+        return Clientes;
     }
 
     public void setClientes(Set<Cliente> clientes) {
-        this.clientes = clientes;
+        this.Clientes = clientes;
     }
 
     public Set<Operacion> getOperaciones() {
@@ -93,7 +96,7 @@ public class Cuenta {
     public void setOperaciones(Set<Operacion> operaciones) {
         this.operaciones = operaciones;
     }
-
+/*
     public Set<Transferencia> getTransferencias() {
         return transferencias;
     }
@@ -101,16 +104,16 @@ public class Cuenta {
     public void setTransferencia(Set<Transferencia> transferencias) {
         this.transferencias = transferencias;
     }
-
+*/
     // Métodos utilitarios
 
     public void addCliente(Cliente cliente) {
-        clientes.add(cliente);
+        Clientes.add(cliente);
         cliente.getCuentas().add(this);
     }
 
     public void removeCliente(Cliente cliente) {
-        clientes.remove(cliente);
+        Clientes.remove(cliente);
         cliente.getCuentas().remove(this);
     }
 
@@ -122,7 +125,7 @@ public class Cuenta {
     public void removeOperacion(Operacion op) {
         operaciones.remove(op);
         op.setCuentaOrigen(null);
-    }
+    }/*
 
     public void addTransferencia(Transferencia transferencia) {
         transferencias.add(transferencia);
@@ -132,49 +135,16 @@ public class Cuenta {
     public void removeTransferencia(Transferencia transferencia) {
         transferencias.remove(transferencia);
         transferencia.setCuentaDestino(null);
-    }
+    }*/
 
     @Override
     public String toString() {
-        StringBuilder clientesStr = new StringBuilder();
-        for (Cliente cliente : clientes) {
-            clientesStr.append(cliente.getDni()).append(", ");
-        }
-        if (!clientes.isEmpty()) {
-            clientesStr.setLength(clientesStr.length() - 2); // quitar última coma
-        }
-    
-        StringBuilder operacionesStr = new StringBuilder();
-        for (Operacion op : operaciones) {
-            String cuentaOrigenIBAN = (op.getCuentaOrigen() != null) ? op.getCuentaOrigen().getIBAN() : "null";
-            operacionesStr.append("[Codigo=").append(op.getCodigoOperacion())
-                          .append(", CuentaOrigen=").append(cuentaOrigenIBAN)
-                          .append("], ");
-        }
-        if (!operaciones.isEmpty()) {
-            operacionesStr.setLength(operacionesStr.length() - 2);
-        }
-    
-        StringBuilder transferenciasStr = new StringBuilder();
-        for (Transferencia tr : transferencias) {
-            String cuentaDestinoIBAN = (tr.getCuentaDestino() != null) ? tr.getCuentaDestino().getIBAN() : "null";
-            transferenciasStr.append("[Codigo=").append(tr.getCodigoOperacion())
-                             .append(", CuentaDestino=").append(cuentaDestinoIBAN)
-                             .append("], ");
-        }
-        if (!transferencias.isEmpty()) {
-            transferenciasStr.setLength(transferenciasStr.length() - 2);
-        }
-    
         return "Cuenta{" +
                 "IBAN='" + IBAN + '\'' +
                 ", Numerocuenta=" + Numerocuenta +
                 ", FechaCreacion=" + FechaCreacion +
                 ", Saldo=" + Saldo +
-                ", Clientes=[" + clientesStr +
-                "], Operaciones=[" + operacionesStr +
-                "], Transferencias=[" + transferenciasStr +
-                "]" +
                 '}';
     }
+    
 }
