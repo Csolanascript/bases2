@@ -7,28 +7,29 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     
     <!-- Explicitly list all entity classes -->
-    <class>uni.Cuenta</class > 
-    <class>uni.Cliente</class >
+    <class>uni.Cuenta</class>
+    <class>uni.Cliente</class>
     <class>uni.Operacion</class>
     <class>uni.OperacionEfectivo</class>
-    <!--class>uni.Transferencia</class-->
+    <!-- <class>uni.Transferencia</class> -->
     <class>uni.Oficina</class>
     <class>uni.CuentaCorriente</class>
     <class>uni.CuentaAhorro</class>
     <class>uni.Direccion</class>
     
-    <!-- Disable automatic scanning - critical for bytecode compatibility -->
+    <!-- Disable automatic scanning -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     
     <properties>
-      <!-- Configuración de Hibernate para Oracle -->
+      <!-- Hibernate configuration for Oracle -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.hbm2ddl.auto" value="create"/>
       
-      <!-- Conexión a Oracle XE -->
+      <!-- Connection to Oracle XE -->
       <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
+      <!-- Cambiado a XEPDB1 en lugar de XE -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
       <property name="javax.persistence.jdbc.user" value="admin"/>
       <property name="javax.persistence.jdbc.password" value="admin"/>
     </properties>

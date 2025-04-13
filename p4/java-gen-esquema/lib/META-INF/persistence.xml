@@ -6,32 +6,32 @@
   <persistence-unit name="UnidadPersistenciaBanco" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     
-    <!-- Lista de clases de entidad -->
+    <!-- Explicitly list all entity classes -->
     <class>uni.Cuenta</class>
     <class>uni.Cliente</class>
     <class>uni.Operacion</class>
     <class>uni.OperacionEfectivo</class>
-    <class>uni.Transferencia</class>
+    <!-- <class>uni.Transferencia</class> -->
     <class>uni.Oficina</class>
-    <class>uni.Direccion</class>
     <class>uni.CuentaCorriente</class>
+    <class>uni.CuentaAhorro</class>
+    <class>uni.Direccion</class>
     
+    <!-- Disable automatic scanning -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     
     <properties>
-      <!-- Configuración de Hibernate para Oracle -->
+      <!-- Hibernate configuration for Oracle -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.hbm2ddl.auto" value="create"/>
       
-      <!-- Conexión a Oracle XE -->
-      <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
+      <!-- Connection to Oracle XE -->
+      <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+      <!-- Cambiado a XEPDB1 en lugar de XE -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
       <property name="javax.persistence.jdbc.user" value="admin"/>
       <property name="javax.persistence.jdbc.password" value="admin"/>
-      
-      <!-- Forzar el uso de Hibernate -->
-      <property name="hibernate.classloading.use_current_tccl_as_parent" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -15,7 +15,7 @@ public class Test3 {
     
     public void prueba() {
         System.out.println("Hola mundo");
-        /*
+        
         // ----- Create Offices -----
         Oficina o1 = new Oficina();
         o1.setCodigoOficina("1001");
@@ -39,25 +39,39 @@ public class Test3 {
             System.out.println("ERROR persistiendo oficinas: " + e.getMessage());
         }
         
-        // ----- Create Clients -----
+    // ----- Create Clients -----
         Cliente c1 = new Cliente();
         Direccion d1 = new Direccion();
         d1.setCalle("Calle Alcalá 100");
         d1.setCodigoPostal("28001");
         d1.setCiudad("Madrid");
-        
+
+        em.persist(d1);
         c1.setDni("12345678A");
         c1.setNombre("Juan Pérez");
         c1.setDireccion(d1);
-        
+        c1.setApellidos("García Pérez"); 
+        c1.setTelefono("600000000");
+        c1.setEmail("hola@hotmail");
+        c1.setEdad(30);
+
         Cliente c2 = new Cliente();
         Direccion d2 = new Direccion();
         d2.setCalle("Avenida Diagonal 456");
         d2.setCodigoPostal("08013");
+        d2.setCiudad("Barcelona"); 
+
+        em.persist(d2);
         c2.setDni("87654321B");
         c2.setNombre("María López");
+        c2.setApellidos("García López"); 
+        c2.setTelefono("600000001");
+        c2.setEmail("hola@gmail");
+        c2.setEdad(25);
         c2.setDireccion(d2);
+
         
+
         trans.begin();
         try {
             em.persist(c1);
@@ -118,6 +132,7 @@ public class Test3 {
         retirada.setTipoOperacion(OperacionEfectivo.TipoOperacionEfectivo.RETIRADA);
         retirada.setOficina(o2);
         
+        /* 
         // 3. Transfer between accounts
         Transferencia transferencia = new Transferencia();
         transferencia.setCodigoOperacion(3);
@@ -126,16 +141,16 @@ public class Test3 {
         transferencia.setCuentaOrigen(cuenta1);
         transferencia.setCuentaDestino(cuenta2);
         transferencia.setDescripcion("Transferencia mensual");
-        
+        */
         trans.begin();
         try {
             em.persist(deposito);
             em.persist(retirada);
-            em.persist(transferencia);
+            //em.persist(transferencia);
             
             // Update account balances
-            cuenta1.setSaldo((long)(cuenta1.getSaldo() + deposito.getCantidad() - transferencia.getCantidad()));
-            cuenta2.setSaldo((long)(cuenta2.getSaldo() - retirada.getCantidad() + transferencia.getCantidad()));
+            cuenta1.setSaldo((long)(cuenta1.getSaldo() + deposito.getCantidad())); //- transferencia.getCantidad()));
+            cuenta2.setSaldo((long)(cuenta2.getSaldo() - retirada.getCantidad())); //+ transferencia.getCantidad()));
             
             em.merge(cuenta1);
             em.merge(cuenta2);
@@ -145,7 +160,7 @@ public class Test3 {
             System.out.println("Operaciones bancarias realizadas correctamente:");
             System.out.println("Depósito: " + deposito);
             System.out.println("Retirada: " + retirada);
-            System.out.println("Transferencia: " + transferencia);
+            //System.out.println("Transferencia: " + transferencia);
             System.out.println("Nuevo saldo cuenta1: " + cuenta1.getSaldo());
             System.out.println("Nuevo saldo cuenta2: " + cuenta2.getSaldo());
         } catch (PersistenceException e) {
@@ -155,7 +170,7 @@ public class Test3 {
         } finally {
             em.close();
             entityManagerFactory.close();
-        }*/
+        }
     }
     
     public static void main(String[] args) {

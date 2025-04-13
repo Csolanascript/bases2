@@ -41,7 +41,8 @@ public class Cliente {
     @Column(name = "Edad", nullable = false)
     private int Edad;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "Direccion_ID_Direccion")
     private Direccion Direccion;
 
     @Column(name = "Email", nullable = true)
