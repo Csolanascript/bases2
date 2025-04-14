@@ -29,11 +29,10 @@ public abstract class Operacion {
     
     @Column(name = "CANTIDAD", nullable = false)
     private double cantidad;
-    
-    
+
     @Id
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "CUENTA_ORIGEN_IBAN") 
+    @ManyToOne
+    @JoinColumn(name = "CUENTA_ORIGEN_IBAN", nullable = false)
     private Cuenta cuentaOrigen;
     
     @Column(name = "DESCRIPCION")
@@ -50,8 +49,8 @@ public abstract class Operacion {
         this.codigoOperacion = codigoOperacion;
         this.fechaHora = fechaHora;
         this.cantidad = cantidad;
-        this.cuentaOrigen = cuentaOrigen;
         this.descripcion = descripcion;
+        setCuentaOrigen(cuentaOrigen); // Para que también asigne el IBAN
     }
     
     
@@ -87,6 +86,7 @@ public abstract class Operacion {
     public void setCuentaOrigen(Cuenta cuentaOrigen) {
         this.cuentaOrigen = cuentaOrigen;
     }
+    
 
     public String getDescripcion() {
         return descripcion;

@@ -36,7 +36,8 @@ public abstract class OperacionBancaria {
     @Column(name = "cantidad", nullable = false)
     private double cantidad;
 
-    
+    @Column(name = "tipo", nullable = false)
+    private String tipo;     
 
     // Constructors
     public OperacionBancaria() {
@@ -92,7 +93,16 @@ public abstract class OperacionBancaria {
         this.iban = iban;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
 
+    public void setTipo(String tipo) {
+        if (!tipo.equals("transferencia") && !tipo.equals("ingreso") && !tipo.equals("retirada")) {
+            throw new IllegalArgumentException("El tipo debe ser 'transferencia', 'ingreso' o 'retirada'");
+        }
+        this.tipo = tipo;
+    }
 
     @Override
     public String toString() {

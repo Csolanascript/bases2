@@ -15,12 +15,12 @@ public class Test3 {
     public void prueba() {
         // Create offices
         Sucursal o1 = new Sucursal();
-        o1.setCodigoOficina("1001");
+        o1.setCodigo_sucursal(1001);
         o1.setDireccion("Gran Vía 123, Madrid");
         o1.setTelefono("915555555");
         
         Sucursal o2 = new Sucursal();
-        o2.setCodigoOficina("1002");
+        o2.setCodigo_sucursal(1002);
         o2.setDireccion("Calle Mayor 45, Barcelona");
         o2.setTelefono("935555555");
 
@@ -40,12 +40,12 @@ public class Test3 {
         
         // Create clients
         Cliente c1 = new Cliente();
-        c1.setDni("12345678A");
+        c1.setDni(12345678);
         c1.setNombre("Juan Pérez");
         c1.setDireccion("Calle Alcalá 100, Madrid");
         
         Cliente c2 = new Cliente();
-        c2.setDni("87654321B");
+        c2.setDni(87654321);
         c2.setNombre("María López");
         c2.setDireccion("Paseo de Gracia 78, Barcelona");
         
@@ -95,32 +95,33 @@ public class Test3 {
         // Create operations
         
         // 1. Cash deposit
-        Retirada deposito = new Retirada();
-        deposito.setCodigoOperacion(1);
-        deposito.setFechaHora(new Date());
+        Ingreso deposito = new Ingreso();
+        deposito.setCodigo_numerico(1);
+        deposito.setFecha(new Date());
+        deposito.setHora(new Date());
         deposito.setCantidad(500);
-        deposito.setCuentaOrigen(cuenta1);
-        deposito.setDescripcion("Ingreso en efectivo");
-        deposito.setTipoOperacion(Retirada.TipoOperacionEfectivo.INGRESO);
-        deposito.setOficina(o1);
+        deposito.setIban(cuenta1);
+        deposito.setTipo("ingreso");
+        deposito.setCodigoSucursal(o1);
         
         // 2. Cash withdrawal
         Retirada retirada = new Retirada();
-        retirada.setCodigoOperacion(2);
-        retirada.setFechaHora(new Date());
+        retirada.setCodigo_numerico(2);
+        retirada.setFecha(new Date());
+        retirada.setHora(new Date());
         retirada.setCantidad(200);
-        retirada.setCuentaOrigen(cuenta2);
-        retirada.setDescripcion("Retirada en efectivo");
-        retirada.setTipoOperacion(Retirada.TipoOperacionEfectivo.RETIRADA);
+        retirada.setIban(cuenta2);
+        retirada.setTipo("retirada");
         retirada.setOficina(o2);
         // 3. Transfer between accounts
         Transferencia transferencia = new Transferencia();
-        transferencia.setCodigoOperacion(3);
-        transferencia.setFechaHora(new Date());
+        transferencia.setCodigo_numerico(3);
+        transferencia.setFecha(new Date());
+        transferencia.setHora(new Date());
         transferencia.setCantidad(300);
-        transferencia.setCuentaOrigen(cuenta1);
+        transferencia.setIban(cuenta1);
+        transferencia.setTipo("transferencia");
         transferencia.setCuentaDestino(cuenta2);
-        transferencia.setDescripcion("Transferencia mensual");
         
         trans.begin();
         try {

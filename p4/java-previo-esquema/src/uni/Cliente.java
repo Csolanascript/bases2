@@ -124,20 +124,20 @@ public class Cliente {
     }
 
 	public List<Cuenta> getCuentas() {
-        return Cuentas;
+        return cuentas;
     }
 
     public void setCuentas(List<Cuenta> cuentas) {
-        this.Cuentas = cuentas;
+        this.cuentas = cuentas;
     }
 
     public void addCuenta(Cuenta cuenta) {
-        Cuentas.add(cuenta);
+        cuentas.add(cuenta);
         cuenta.getClientes().add(this);
     }
 
     public void removeCuenta(Cuenta cuenta) {
-        Cuentas.remove(cuenta);
+        cuentas.remove(cuenta);
         cuenta.getClientes().remove(this);
     }
 

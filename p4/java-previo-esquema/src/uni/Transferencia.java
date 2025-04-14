@@ -1,27 +1,47 @@
 package uni;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Transferencia")
 public class Transferencia extends OperacionBancaria {
-    
+
+    @ManyToOne(optional = true) // ¡Importante! No usar optional = false
+    private Cuenta cuentaDestino;
+
     // Constructors
     public Transferencia() {
-        super();
     }
 
-    @ManyToOne(optional = false)
-    private Cuenta iban_receptor;
-    
-    
+    public Transferencia(int codigoOperacion, Date fecha, Date hora, double cantidad, Cuenta cuentaOrigen) {
+        super(codigoOperacion, fecha, hora, cantidad, cuentaOrigen);
+    }
+
     // Getters and setters
     public void setCuentaDestino(Cuenta cuentaDestino) {
-        this.iban_receptor = iban_receptor;
+        this.cuentaDestino = cuentaDestino;
     }
-    
+
     public Cuenta getCuentaDestino() {
-        return iban_receptor;
+        return cuentaDestino;
     }
-    
+/*
     @Override
     public String toString() {
-        return super.toString() + " Transferencia [CuentaDestino=" + iban_receptor + "]";
-    }
+        return "Transferencia {" +
+                "CodigoOperacion=" + getCodigoOperacion() +
+                ", FechaHora=" + getFechaHora() +
+                ", Cantidad=" + getCantidad() +
+                (getDescripcion() != null ? ", Descripcion='" + getDescripcion() + '\'' : "") +
+                '}';
+    }*/
+
 }
