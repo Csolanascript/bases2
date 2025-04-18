@@ -18,7 +18,7 @@
             
             <!-- Conexión a Oracle XE: actualiza usuario y contraseña para que coincidan con docker-compose -->
             <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1522:XEPDB1"/>
             <property name="javax.persistence.jdbc.user" value="admin"/>
             <property name="javax.persistence.jdbc.password" value="admin"/>
             
