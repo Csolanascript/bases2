@@ -2,11 +2,9 @@ package uni;
 
 import java.util.Date;
 
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 

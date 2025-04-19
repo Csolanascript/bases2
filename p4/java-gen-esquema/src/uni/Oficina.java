@@ -1,9 +1,7 @@
 package uni;
 
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
