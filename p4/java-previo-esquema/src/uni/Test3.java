@@ -41,13 +41,22 @@ public class Test3 {
         // Create clients
         Cliente c1 = new Cliente();
         c1.setDni(12345678);
-        c1.setNombre("Juan Pérez");
-        c1.setDireccion("Calle Alcalá 100, Madrid");
+        c1.setNombre("Juan");
+        c1.setApellidos("Pérez");             
+        c1.setDireccion("Calle Alcalá 100");
+        c1.setEdad(30);                        
+        c1.setTelefono("600123456");           
+        c1.setEmail("juan.perez@example.com"); 
+
         
         Cliente c2 = new Cliente();
         c2.setDni(87654321);
-        c2.setNombre("María López");
+        c2.setNombre("María");
+        c2.setApellidos("López");
         c2.setDireccion("Paseo de Gracia 78, Barcelona");
+        c2.setEdad(28);                       
+        c2.setTelefono("600654321");           
+        c2.setEmail("maria.lopez@example.com");
         
         trans.begin();
         try {
@@ -121,7 +130,7 @@ public class Test3 {
         transferencia.setCantidad(300);
         transferencia.setIban(cuenta1);
         transferencia.setTipo("transferencia");
-        transferencia.setCuentaDestino(cuenta2);
+        transferencia.setiban_receptor(cuenta2);
         
         trans.begin();
         try {

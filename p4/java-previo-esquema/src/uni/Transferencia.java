@@ -2,11 +2,7 @@ package uni;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -15,23 +11,23 @@ import javax.persistence.Table;
 public class Transferencia extends OperacionBancaria {
 
     @ManyToOne(optional = true) // ¡Importante! No usar optional = false
-    private Cuenta cuentaDestino;
+    private Cuenta iban_receptor;
 
     // Constructors
     public Transferencia() {
     }
 
-    public Transferencia(int codigoOperacion, Date fecha, Date hora, double cantidad, Cuenta cuentaOrigen) {
-        super(codigoOperacion, fecha, hora, cantidad, cuentaOrigen);
+    public Transferencia(int codigoOperacion, Date fecha, Date hora, double cantidad, Cuenta iban_receptor) {
+        super(codigoOperacion, fecha, hora, cantidad, iban_receptor);
     }
 
     // Getters and setters
-    public void setCuentaDestino(Cuenta cuentaDestino) {
-        this.cuentaDestino = cuentaDestino;
+    public void setiban_receptor(Cuenta iban_receptor) {
+        this.iban_receptor = iban_receptor;
     }
 
-    public Cuenta getCuentaDestino() {
-        return cuentaDestino;
+    public Cuenta getiban_receptor() {
+        return iban_receptor;
     }
 /*
     @Override

@@ -1,9 +1,6 @@
 package uni;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -11,7 +8,7 @@ import javax.persistence.Table;
 @Table(name = "Retirada")
 public class Retirada extends OperacionBancaria {
     @ManyToOne(optional = false)
-    private Sucursal codigoSucursal;
+    private Sucursal codigo_sucursal;
     
     // Constructors
     public Retirada() {
@@ -20,15 +17,15 @@ public class Retirada extends OperacionBancaria {
     
     
     public Sucursal getOficina() {
-        return codigoSucursal;
+        return codigo_sucursal;
     }
     
-    public void setOficina(Sucursal codigoSucursal) {
-        this.codigoSucursal = codigoSucursal;
+    public void setOficina(Sucursal codigo_sucursal) {
+        this.codigo_sucursal = codigo_sucursal;
     }
     
     @Override
     public String toString() {
-        return super.toString() + " Retirada [Sucursal=" + codigoSucursal + "]";
+        return super.toString() + " Retirada [Sucursal=" + codigo_sucursal + "]";
     }
 }

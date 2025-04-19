@@ -5,8 +5,10 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,6 +17,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "OPERACION")
 @Inheritance(strategy = InheritanceType.JOINED)
+@IdClass(OperacionPK.class)
 public abstract class OperacionBancaria {
 
     @Id
@@ -23,7 +26,12 @@ public abstract class OperacionBancaria {
 
     @Id
     @ManyToOne(optional = false)
+    @JoinColumn(
+        name = "iban_iban",       // ← nombre que Hibernate usará en OPERACION
+        referencedColumnName = "iban"  // ← columna PK de Cuenta
+    )
     private Cuenta iban;
+
 
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha", nullable = false)
