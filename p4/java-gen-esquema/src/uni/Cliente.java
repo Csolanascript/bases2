@@ -8,6 +8,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,11 @@ public class Cliente {
 
 
     @ManyToMany
+    @JoinTable(
+      name = "clientes_cuentas",                            // nombre físico de la tabla
+      joinColumns = @JoinColumn(name = "cliente_dni"),      // FK a Cliente(DNI)
+      inverseJoinColumns = @JoinColumn(name = "cuenta_id")  // FK a Cuenta(IBAN)
+    )
     private Set<Cuenta> Cuentas = new HashSet<>();
 
     @Column(name = "Nombre", nullable = false)
