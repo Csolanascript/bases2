@@ -149,6 +149,62 @@ public class Test3 {
         cuenta3.addCliente(c3);
         cuenta4.addCliente(c4);
 
+        // Crear cliente especial para probar la consulta
+        Cliente testCliente = new Cliente();
+        Direccion testDir = new Direccion();
+        testDir.setCalle("Calle Test");
+        testDir.setCodigoPostal("50001");
+        testDir.setCiudad("Zaragoza");
+        em.persist(testDir);
+
+        testCliente.setDni("99999999Z");
+        testCliente.setNombre("Cliente Test");
+        testCliente.setApellidos("Apellido Test");
+        testCliente.setEdad(40);
+        testCliente.setDireccion(testDir);
+        testCliente.setTelefono("600123456");
+        testCliente.setEmail("cliente@test.com");
+
+        // Crear cuenta asociada
+        Cuenta cuentaTest = new Cuenta();
+        cuentaTest.setIBAN("TEST999999999999999999");
+        cuentaTest.setNumerocuenta(999999);
+        cuentaTest.setFechaCreacion(new Date());
+        cuentaTest.setSaldo(10000);
+
+        // Asociar cliente y cuenta
+        cuentaTest.addCliente(testCliente);
+
+        em.persist(testCliente);
+        em.persist(cuentaTest);
+
+        // Crear cuenta destino para la transferencia
+        Cuenta cuentaDestino = new Cuenta();
+        cuentaDestino.setIBAN("DESTINO99999999999999999");
+        cuentaDestino.setNumerocuenta(888888);
+        cuentaDestino.setFechaCreacion(new Date());
+        cuentaDestino.setSaldo(1000);
+        em.persist(cuentaDestino);
+
+        // Crear transferencia válida (>500€, menos de 3 meses)
+        Transferencia trTest = new Transferencia();
+        trTest.setCodigoOperacion(99);
+        trTest.setFechaHora(new Date()); // Hoy
+        trTest.setCantidad(750.0); // > 500 €
+        trTest.setCuentaOrigen(cuentaTest);
+        trTest.setCuentaDestino(cuentaDestino);
+        trTest.setDescripcion("Transferencia de prueba");
+
+        // Persistir la transferencia
+        em.persist(trTest);
+
+        // Actualizar saldos
+        cuentaTest.setSaldo((long) (cuentaTest.getSaldo() - trTest.getCantidad()));
+        cuentaDestino.setSaldo((long) (cuentaDestino.getSaldo() + trTest.getCantidad()));
+
+        em.merge(cuentaTest);
+        em.merge(cuentaDestino);
+
         trans.begin();
         try {
             em.persist(cuenta1);
@@ -302,28 +358,105 @@ public class Test3 {
             e.printStackTrace();
         }
 
-        trans.begin();
-        try {
-            List<Object[]> sucursalConMasClientes = em.createQuery(
-                "SELECT o, COUNT(DISTINCT cli) " +
-                "FROM Oficina o " +
-                "JOIN o.cuentas c " +
-                "JOIN c.Clientes cli " +
-                "GROUP BY o " +
-                "ORDER BY COUNT(DISTINCT cli) DESC", Object[].class)
-        .getResultList();
+        /*
+         * trans.begin();
+         * try {
+         * List<Object[]> sucursalConMasClientes = em.createQuery(
+         * "SELECT o, COUNT(DISTINCT cli) " +
+         * "FROM Oficina o " +
+         * "JOIN o.cuentas c " +
+         * "JOIN c.Clientes cli " +
+         * "GROUP BY o " +
+         * "ORDER BY COUNT(DISTINCT cli) DESC",
+         * Object[].class)
+         * .getResultList();
+         * 
+         * if (!sucursalConMasClientes.isEmpty()) {
+         * Object[] resultado = sucursalConMasClientes.get(0);
+         * Oficina sucursal = (Oficina) resultado[0];
+         * Long numeroClientes = (Long) resultado[1];
+         * System.out.printf("Sucursal con más clientes: %s, Clientes: %d%n", sucursal,
+         * numeroClientes);
+         * }
+         * 
+         * } catch (PersistenceException e) {
+         * if (trans.isActive())
+         * trans.rollback();
+         * System.out.println("ERROR persistiendo operaciones: " + e.getMessage());
+         * e.printStackTrace();
+         * }
+         */
 
-        if (!sucursalConMasClientes.isEmpty()) {
-            Object[] resultado = sucursalConMasClientes.get(0);
-            Oficina sucursal = (Oficina) resultado[0];
-            Long numeroClientes = (Long) resultado[1];
-            System.out.printf("Sucursal con más clientes: %s, Clientes: %d%n", sucursal, numeroClientes);
-        }
+        try {
+            Date fechaLimite = new Date(System.currentTimeMillis() - 90L * 24 * 60 * 60 * 1000); // 3 meses
+
+            List<Cliente> clientesTransferencias = em.createQuery(
+                    "SELECT DISTINCT c " +
+                            "FROM Cliente c " +
+                            "JOIN c.Cuentas cuenta " +
+                            "JOIN cuenta.operaciones op " +
+                            "WHERE TYPE(op) = Transferencia " +
+                            "AND op.cantidad > 500 " +
+                            "AND op.fechaHora >= :fechaLimite",
+                    Cliente.class)
+                    .setParameter("fechaLimite", fechaLimite)
+                    .getResultList();
+
+            System.out.println("Clientes con transferencias > 500€ en los últimos 3 meses (JPQL):");
+            for (Cliente c : clientesTransferencias) {
+                System.out.println(c);
+            }
+
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Cliente> cq = cb.createQuery(Cliente.class);
+
+            Root<Cliente> clienteRoot = cq.from(Cliente.class);
+            Join<Cliente, Cuenta> joinCuenta = clienteRoot.join("Cuentas");
+            Join<Cuenta, Operacion> joinOperacion = joinCuenta.join("operaciones");
+
+            // ¡Aquí filtramos por clase Transferencia!
+            cq.select(clienteRoot).distinct(true)
+                    .where(
+                            cb.and(
+                                    cb.equal(joinOperacion.type(), Transferencia.class),
+                                    cb.greaterThan(joinOperacion.<Double>get("cantidad"), 500.0),
+                                    cb.greaterThanOrEqualTo(joinOperacion.<Date>get("fechaHora"), fechaLimite)));
+
+            List<Cliente> resultados = em.createQuery(cq).getResultList();
+
+            System.out.println("Resultado Criteria API (transferencias >500€ en últimos 3 meses):");
+            for (Cliente c : resultados) {
+                System.out.println(c);
+            }
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> resultadosSQLNative = em.createNativeQuery(
+                    "SELECT DISTINCT c.* " +
+                            "FROM CLIENTE c " +
+                            "JOIN CLIENTES_CUENTAS cc ON c.DNI = cc.CLIENTE_DNI " +
+                            "JOIN CUENTA cu ON cc.CUENTA_ID = cu.IBAN " +
+                            "JOIN OPERACION op ON cu.IBAN = op.CUENTA_ORIGEN_IBAN " +
+                            "JOIN TRANSFERENCIA t ON t.CODIGO_OPERACION = op.CODIGO_OPERACION AND t.CUENTA_ORIGEN_IBAN = op.CUENTA_ORIGEN_IBAN "
+                            +
+                            "WHERE op.CANTIDAD > 500 AND op.FECHA_HORA >= ?")
+                    .setParameter(1, fechaLimite)
+                    .getResultList();
+
+            // Mostrar resultados
+            System.out.println("Resultado SQL Nativo (transferencias >500€ en últimos 3 meses):");
+            for (Object[] fila : resultadosSQLNative) {
+                Cliente cli = new Cliente();
+                cli.setDni((String) fila[0]);
+                cli.setApellidos((String) fila[1]);
+                cli.setEdad(((Number) fila[2]).intValue());
+                cli.setEmail((String) fila[3]);
+                cli.setNombre((String) fila[4]);
+                cli.setTelefono((String) fila[5]);
+                System.out.println(cli);
+            }
 
         } catch (PersistenceException e) {
-            if (trans.isActive())
-                trans.rollback();
-            System.out.println("ERROR persistiendo operaciones: " + e.getMessage());
+            System.out.println("ERROR ejecutando consulta JPQL de transferencias: " + e.getMessage());
             e.printStackTrace();
         }
 
