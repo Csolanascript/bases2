@@ -89,6 +89,10 @@ public class Sucursal {
     public void setCuentas(List<Corriente> cuentas) {
         this.cuentas = cuentas;
     }
+    public void addCuenta(Corriente cuenta) {
+        this.cuentas.add(cuenta);
+        cuenta.setSucursal(this);
+    }
 
 
     @Override

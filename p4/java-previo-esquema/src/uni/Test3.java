@@ -10,6 +10,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Expression;
+import java.util.Collections;
 
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Test3 {
         EntityTransaction trans = em.getTransaction();
         trans.begin();
         try {
+           
             em.persist(o1);
             em.persist(o2);
             trans.commit();
@@ -158,6 +160,40 @@ public class Test3 {
 
         em.persist(cExtra);
         em.persist(cuentaExtra);
+
+        Corriente cuentaCorrienteTest = new Corriente();
+        cuentaCorrienteTest.setIBAN("TESTCC9999999999999999");
+        cuentaCorrienteTest.setNumerocuenta(999998);
+        cuentaCorrienteTest.setFechaCreacion(new Date());
+        cuentaCorrienteTest.setSaldo(50000);
+        cuentaCorrienteTest.addCliente(testCliente);
+    
+
+        Cliente testCliente2 = new Cliente();
+        testCliente2.setDni(88888888);
+        testCliente2.setNombre("Cliente Test 2");
+        testCliente2.setApellidos("Apellido Test 2");
+        testCliente2.setEdad(35);
+        testCliente2.setDireccion("Calle Test 2, 50002, Zaragoza");
+        testCliente2.setTelefono("600654321");
+        testCliente.addCuenta(cuentaCorrienteTest);
+
+
+
+        Sucursal oficinaTest = new Sucursal();
+        oficinaTest.setCodigo_sucursal(9999);
+        oficinaTest.setDireccion("Calle Test 123, Zaragoza");
+        oficinaTest.setTelefono("600000000");
+        oficinaTest.addCuenta(cuentaCorrienteTest);
+        em.persist(oficinaTest);
+
+
+
+        // Asociar cliente y cuenta
+        cuentaCorrienteTest.addCliente(testCliente);
+
+        em.persist(testCliente);
+        em.persist(cuentaCorrienteTest);
 
         // Crear una cuenta de destino para recibir la transferencia
         Cuenta cuentaReceptora = new Cuenta();
@@ -381,6 +417,110 @@ public class Test3 {
             }
             System.out.println("ERROR persistiendo operaciones: " + e.getMessage());
             e.printStackTrace();
+        }
+        trans.begin();
+        try {
+            Double avgBalance = em.createQuery(
+                "SELECT AVG(c.saldo) FROM Cuenta c", Double.class)
+              .getSingleResult();
+            System.out.println("Saldo medio de todas las cuentas: " + avgBalance);
+            // 2) JPQL: branch with most clients above‑average
+            List<Object[]> sucursalJPQL = em.createQuery(
+                "SELECT s.codigo_sucursal, s.direccion, s.telefono, COUNT(DISTINCT cli) " +
+                "FROM Sucursal s " +
+                " JOIN s.cuentas c " +
+                " JOIN c.clientes cli " +
+                "WHERE c.saldo > :avgBalance " +
+                "GROUP BY s.codigo_sucursal, s.direccion, s.telefono " +
+                "ORDER BY COUNT(DISTINCT cli) DESC",
+                Object[].class)
+              .setParameter("avgBalance", avgBalance.longValue())
+              .setMaxResults(1)
+              .getResultList();
+            
+            // print sucursalJPQL
+            if (!sucursalJPQL.isEmpty()) {
+                Object[] r = sucursalJPQL.get(0);
+                System.out.printf(
+                  " \n   JPQL – CódigoSucursal=%d, Dirección=%s, Teléfono=%s, Clientes=%d%n",
+                  ((Number)r[0]).intValue(), r[1], r[2], ((Number)r[3]).longValue()
+                );
+            }
+            else {
+                System.out.println("\n No hay sucursales con saldo medio superior a " + avgBalance + "\n");
+            }
+            
+
+            // 3) Native SQL for Oracle
+            @SuppressWarnings("unchecked")
+            List<Object[]> sucursalNativo = (List<Object[]>) em.createNativeQuery(
+                "SELECT s.CODIGO_SUCURSAL, s.DIRECCION, s.TELEFONO, COUNT(DISTINCT cli.dni) " +
+                "FROM OFICINA s " +  // ← Use correct table name matching your entity
+                "  JOIN Corriente co           ON s.CODIGO_SUCURSAL = co.codigo_sucursal_codigo_sucursal " +
+                "  JOIN Cuenta c               ON co.iban            = c.iban " +
+                "  JOIN clientes_cuentas cc    ON c.iban             = cc.cuenta_id " +
+                "  JOIN Cliente cli            ON cc.cliente_dni     = cli.dni " +
+                "WHERE c.saldo > ? " +
+                "GROUP BY s.CODIGO_SUCURSAL, s.DIRECCION, s.TELEFONO " +
+                "ORDER BY COUNT(DISTINCT cli.dni) DESC"
+            )
+            .setParameter(1, avgBalance.longValue())
+            .setMaxResults(1)
+            .getResultList();
+            
+            // print sucursalNativo
+            if (!sucursalNativo.isEmpty()) {
+                Object[] r = sucursalNativo.get(0);
+                System.out.printf(
+                  "\n  Native SQL – CódigoSucursal=%d, Dirección=%s, Teléfono=%s, Clientes=%d%n",
+                  ((Number)r[0]).intValue(), r[1], r[2], ((Number)r[3]).longValue()
+                );
+            }
+            else {
+                System.out.println("\n No hay sucursales con saldo medio superior a " + avgBalance + "\n");
+            }
+            
+
+            
+            // 4) Criteria API version
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+            Root<Sucursal> suRoot = cq.from(Sucursal.class);
+            Join<Sucursal, Cuenta> joinC  = suRoot.join("cuentas");
+            Join<Cuenta, Cliente> joinCl  = joinC.join("clientes");
+            Expression<Long> cnt           = cb.countDistinct(joinCl);
+            
+            cq.multiselect(
+                suRoot.get("codigo_sucursal"),
+                suRoot.get("direccion"),
+                suRoot.get("telefono"),
+                cnt
+            )
+            .where(cb.gt(joinC.get("saldo"), avgBalance))
+            .groupBy(
+                suRoot.get("codigo_sucursal"),
+                suRoot.get("direccion"),
+                suRoot.get("telefono")
+            )
+            .orderBy(cb.desc(cnt));
+            
+            List<Object[]> sucursalCriteria = em.createQuery(cq)
+                .setMaxResults(1)
+                .getResultList();
+            
+            // print sucursalCriteria
+            if (!sucursalCriteria.isEmpty()) {
+                Object[] r = sucursalCriteria.get(0);
+                System.out.printf(
+                  "\n  Criteria API – CódigoSucursal=%d, Dirección=%s, Teléfono=%s, Clientes=%d%n",
+                  ((Number)r[0]).intValue(), r[1], r[2], ((Number)r[3]).longValue()
+                );
+            }
+            
+            trans.commit();
+        } catch (PersistenceException e) {
+            if (trans.isActive()) trans.rollback();
+            System.out.println("ERROR persistiendo operaciones: " + e.getMessage());
         }
 
         try {
