@@ -16,17 +16,16 @@ import java.util.List;
 
 public class Test3 {
     // Note: The persistence unit name here must match the one in persistence.xml.
-    EntityManagerFactory entityManagerFactory = 
-            Persistence.createEntityManagerFactory("UnidadPersistenciaBanco");
+    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("UnidadPersistenciaBanco");
     EntityManager em = entityManagerFactory.createEntityManager();
-    
-    public void prueba() {        
+
+    public void prueba() {
         // ----- Create Offices -----
         Oficina o1 = new Oficina();
         o1.setCodigoOficina("1001");
         o1.setDireccion("Gran Vía 123, Madrid");
         o1.setTelefono("915555555");
-        
+
         Oficina o2 = new Oficina();
         o2.setCodigoOficina("1002");
         o2.setDireccion("Calle Mayor 45, Barcelona");
@@ -40,11 +39,12 @@ public class Test3 {
             trans.commit();
             System.out.println("Oficinas creadas correctamente");
         } catch (PersistenceException e) {
-            if (trans.isActive()) trans.rollback();
+            if (trans.isActive())
+                trans.rollback();
             System.out.println("ERROR persistiendo oficinas: " + e.getMessage());
         }
-        
-    // ----- Create Clients -----
+
+        // ----- Create Clients -----
         Cliente c1 = new Cliente();
         Direccion d1 = new Direccion();
         d1.setCalle("Calle Alfonso I 23");
@@ -55,7 +55,7 @@ public class Test3 {
         c1.setDni("12345678A");
         c1.setNombre("Juan Pérez");
         c1.setDireccion(d1);
-        c1.setApellidos("García Pérez"); 
+        c1.setApellidos("García Pérez");
         c1.setTelefono("600000000");
         c1.setEmail("hola@hotmail");
         c1.setEdad(30);
@@ -64,12 +64,12 @@ public class Test3 {
         Direccion d2 = new Direccion();
         d2.setCalle("Avenida Diagonal 456");
         d2.setCodigoPostal("08013");
-        d2.setCiudad("Barcelona"); 
+        d2.setCiudad("Barcelona");
         em.persist(d2);
 
         c2.setDni("87654321B");
         c2.setNombre("María López");
-        c2.setApellidos("García López"); 
+        c2.setApellidos("García López");
         c2.setTelefono("600000001");
         c2.setEmail("hola@gmail");
         c2.setEdad(25);
@@ -105,8 +105,6 @@ public class Test3 {
         c4.setEdad(35);
         c4.setDireccion(d4);
 
-        
-
         trans.begin();
         try {
             em.persist(c1);
@@ -116,17 +114,18 @@ public class Test3 {
             trans.commit();
             System.out.println("Clientes creados correctamente");
         } catch (PersistenceException e) {
-            if (trans.isActive()) trans.rollback();
+            if (trans.isActive())
+                trans.rollback();
             System.out.println("ERROR persistiendo clientes: " + e.getMessage());
         }
-        
+
         // ----- Create Accounts -----
         Cuenta cuenta1 = new Cuenta();
         cuenta1.setIBAN("ES1234567890123456789012");
         cuenta1.setNumerocuenta(123456);
         cuenta1.setFechaCreacion(new Date());
         cuenta1.setSaldo(1000);
-        
+
         Cuenta cuenta2 = new Cuenta();
         cuenta2.setIBAN("ES9876543210987654321098");
         cuenta2.setNumerocuenta(654321);
@@ -138,7 +137,7 @@ public class Test3 {
         cuenta3.setNumerocuenta(111111);
         cuenta3.setFechaCreacion(new Date());
         cuenta3.setSaldo(5000);
-        
+
         Cuenta cuenta4 = new Cuenta();
         cuenta4.setIBAN("ES2222222222222222222222");
         cuenta4.setNumerocuenta(222222);
@@ -149,7 +148,7 @@ public class Test3 {
         cuenta2.addCliente(c2);
         cuenta3.addCliente(c3);
         cuenta4.addCliente(c4);
-        
+
         trans.begin();
         try {
             em.persist(cuenta1);
@@ -159,10 +158,11 @@ public class Test3 {
             trans.commit();
             System.out.println("Cuentas creadas correctamente");
         } catch (PersistenceException e) {
-            if (trans.isActive()) trans.rollback();
+            if (trans.isActive())
+                trans.rollback();
             System.out.println("ERROR persistiendo cuentas: " + e.getMessage());
         }
-        
+
         // ----- Create Operations -----
         // 1. Cash deposit (Ingreso)
         OperacionEfectivo deposito = new OperacionEfectivo();
@@ -173,7 +173,7 @@ public class Test3 {
         deposito.setDescripcion("Ingreso en efectivo");
         deposito.setTipoOperacion(OperacionEfectivo.TipoOperacionEfectivo.INGRESO);
         deposito.setOficina(o1);
-        
+
         // 2. Cash withdrawal (Retirada)
         OperacionEfectivo retirada = new OperacionEfectivo();
         retirada.setCodigoOperacion(2);
@@ -183,8 +183,7 @@ public class Test3 {
         retirada.setDescripcion("Retirada en efectivo");
         retirada.setTipoOperacion(OperacionEfectivo.TipoOperacionEfectivo.RETIRADA);
         retirada.setOficina(o2);
-        
-        
+
         // 3. Transfer between accounts
         Transferencia transferencia = new Transferencia();
         transferencia.setCodigoOperacion(3);
@@ -193,117 +192,137 @@ public class Test3 {
         transferencia.setCuentaOrigen(cuenta1);
         transferencia.setCuentaDestino(cuenta2);
         transferencia.setDescripcion("Transferencia mensual");
-        
+
         trans.begin();
         try {
             em.persist(deposito);
             em.persist(retirada);
             em.persist(transferencia);
-            
+
             // Update account balances
-            cuenta1.setSaldo((long)(cuenta1.getSaldo() + deposito.getCantidad() - transferencia.getCantidad()));
-            cuenta2.setSaldo((long)(cuenta2.getSaldo() - retirada.getCantidad()+ transferencia.getCantidad()));
-            
+            cuenta1.setSaldo((long) (cuenta1.getSaldo() + deposito.getCantidad() - transferencia.getCantidad()));
+            cuenta2.setSaldo((long) (cuenta2.getSaldo() - retirada.getCantidad() + transferencia.getCantidad()));
+
             em.merge(cuenta1);
             em.merge(cuenta2);
-            
+
             trans.commit();
-            
+
             System.out.println("Operaciones bancarias realizadas correctamente:");
             System.out.println("Depósito: " + deposito);
             System.out.println("Retirada: " + retirada);
-            //System.out.println("Transferencia: " + transferencia);
+            // System.out.println("Transferencia: " + transferencia);
             System.out.println("Nuevo saldo cuenta1: " + cuenta1.getSaldo());
             System.out.println("Nuevo saldo cuenta2: " + cuenta2.getSaldo());
 
-
-
             // ----- Querying the database -----
             // 1. Devolver el saldo medio de las cuentas de los clientes agrupado por ciudad
-        //JPQL
-        List<Object[]> mediasPorCiudad = em.createQuery(
-        "SELECT d.Ciudad, AVG(cu.Saldo) " + //Seleccionamos la ciudad y el saldo medio
-        "  FROM Cliente cli " + //Desde la entidad Cliente
-        "  JOIN cli.Direccion d " +   //Join con la entidad Direccion
-        "  JOIN cli.Cuentas cu " +    //Join con la entidad Cuenta
-        " GROUP BY d.Ciudad" +  //Agrupamos resultados por ciudad
-        " ORDER BY AVG(cu.Saldo) DESC", Object[].class) //Ordenamos por saldo medio
-        .getResultList();
+            // JPQL
+            List<Object[]> mediasPorCiudad = em.createQuery(
+                    "SELECT d.Ciudad, AVG(cu.Saldo) " + // Seleccionamos la ciudad y el saldo medio
+                            "  FROM Cliente cli " + // Desde la entidad Cliente
+                            "  JOIN cli.Direccion d " + // Join con la entidad Direccion
+                            "  JOIN cli.Cuentas cu " + // Join con la entidad Cuenta
+                            " GROUP BY d.Ciudad" + // Agrupamos resultados por ciudad
+                            " ORDER BY AVG(cu.Saldo) DESC",
+                    Object[].class) // Ordenamos por saldo medio
+                    .getResultList();
 
-        System.out.println("Resultado JPQL:");
-        //Mostramos el resultado de la consulta
-        for (Object[] fila : mediasPorCiudad) {
-            String ciudad = (String) fila[0];
-            Double saldoMedio = (Double) fila[1];
-            System.out.printf("Ciudad: %s → Saldo medio: %.2f%n", ciudad, saldoMedio);
-        }
+            System.out.println("Resultado JPQL:");
+            // Mostramos el resultado de la consulta
+            for (Object[] fila : mediasPorCiudad) {
+                String ciudad = (String) fila[0];
+                Double saldoMedio = (Double) fila[1];
+                System.out.printf("Ciudad: %s → Saldo medio: %.2f%n", ciudad, saldoMedio);
+            }
 
+            // Criteria API
+            // 1. Obtenemos el CriteriaBuilder y creamos un CriteriaQuery que devuelva
+            // Object[]
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
 
-        //Criteria API
-        // 1. Obtenemos el CriteriaBuilder y creamos un CriteriaQuery que devuelva Object[]
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+            // 2. Definimos la raíz de la consulta sobre Cliente
+            Root<Cliente> cliente = cq.from(Cliente.class);
 
-        // 2. Definimos la raíz de la consulta sobre Cliente
-        Root<Cliente> cliente = cq.from(Cliente.class);
+            // 3. Hacemos los joins a las asociaciones de Cliente
+            Join<Cliente, Direccion> joinDir = cliente.join("Direccion");
+            Join<Cliente, Cuenta> joinCta = cliente.join("Cuentas");
 
-        // 3. Hacemos los joins a las asociaciones de Cliente
-        Join<Cliente,Direccion> joinDir = cliente.join("Direccion");
-        Join<Cliente,Cuenta>    joinCta = cliente.join("Cuentas");
+            // Expresión de promedio
+            Expression<Double> avgSaldo = cb.avg(joinCta.get("Saldo"));
+            // 4. Seleccionamos dos cosas:
+            // Construcción de la consulta
+            cq.multiselect(
+                    joinDir.get("Ciudad"),
+                    avgSaldo);
 
+            // 5. Definimos la cláusula GROUP BY y ORDER BY
+            cq.groupBy(joinDir.get("Ciudad"));
+            cq.orderBy(cb.desc(avgSaldo));
 
-        // Expresión de promedio
-        Expression<Double> avgSaldo = cb.avg(joinCta.get("Saldo"));
-        // 4. Seleccionamos dos cosas:
-        // Construcción de la consulta
-        cq.multiselect(
-            joinDir.get("Ciudad"),
-            avgSaldo
-        );
-        
-        // 5. Definimos la cláusula GROUP BY y ORDER BY
-        cq.groupBy(joinDir.get("Ciudad"));
-        cq.orderBy(cb.desc(avgSaldo));
-        
-        // 6. Ejecutamos la consulta
-        List<Object[]> resultados = em.createQuery(cq).getResultList();
+            // 6. Ejecutamos la consulta
+            List<Object[]> resultados = em.createQuery(cq).getResultList();
 
-        System.out.println("Resultado Criteria API:");
-        // 7. Procesamos resultados
-        for (Object[] fila : resultados) {
-            String ciudad    = (String) fila[0];
-            Double saldMedio = (Double) fila[1];
-            System.out.printf("Ciudad=%s → Saldo medio=%.2f%n", ciudad, saldMedio);
-        }
+            System.out.println("Resultado Criteria API:");
+            // 7. Procesamos resultados
+            for (Object[] fila : resultados) {
+                String ciudad = (String) fila[0];
+                Double saldMedio = (Double) fila[1];
+                System.out.printf("Ciudad=%s → Saldo medio=%.2f%n", ciudad, saldMedio);
+            }
 
-        //SQL Nativo
-        @SuppressWarnings("unchecked")
-        List<Object[]> resultadosNativo = em.createNativeQuery(
-        "SELECT d.CIUDAD, AVG(c.SALDO) AS SaldoMedio " + //Seleccionamos la ciudad y el saldo medio
-        "  FROM CLIENTE cli " + //Desde la entidad Cliente
-        "  JOIN DIRECCION d  " + //Join con la entidad Direccion
-        "    ON cli.DIRECCION_ID_DIRECCION = d.ID_DIRECCION " + //Sobre el id de Direccion
-        "  JOIN CLIENTES_CUENTAS cc  " + //Join con la tabla intermedia CLIENTES_CUENTAS
-        "    ON cli.DNI = cc.CLIENTE_DNI " + //Sobre el dni de Cliente
-        "  JOIN CUENTA c  " + //Join con la entidad Cuenta
-        "    ON cc.CUENTA_ID = c.IBAN " + //Sobre el id de Cuenta
-        " GROUP BY d.CIUDAD" + // //Agrupamos resultados por ciudad
-        " ORDER BY SaldoMedio DESC"           // añadimos orden descendente
-        ).getResultList();
+            // SQL Nativo
+            @SuppressWarnings("unchecked")
+            List<Object[]> resultadosNativo = em.createNativeQuery(
+                    "SELECT d.CIUDAD, AVG(c.SALDO) AS SaldoMedio " + // Seleccionamos la ciudad y el saldo medio
+                            "  FROM CLIENTE cli " + // Desde la entidad Cliente
+                            "  JOIN DIRECCION d  " + // Join con la entidad Direccion
+                            "    ON cli.DIRECCION_ID_DIRECCION = d.ID_DIRECCION " + // Sobre el id de Direccion
+                            "  JOIN CLIENTES_CUENTAS cc  " + // Join con la tabla intermedia CLIENTES_CUENTAS
+                            "    ON cli.DNI = cc.CLIENTE_DNI " + // Sobre el dni de Cliente
+                            "  JOIN CUENTA c  " + // Join con la entidad Cuenta
+                            "    ON cc.CUENTA_ID = c.IBAN " + // Sobre el id de Cuenta
+                            " GROUP BY d.CIUDAD" + // //Agrupamos resultados por ciudad
+                            " ORDER BY SaldoMedio DESC" // añadimos orden descendente
+            ).getResultList();
 
-        System.out.println("Resultado SQL Nativo:");
-        for (Object[] fila : resultadosNativo) {
-            String ciudad    = (String) fila[0];
-            Number saldMedio = (Number) fila[1];
-            System.out.printf("Ciudad=%s → Saldo medio=%.2f%n",
-                      ciudad, saldMedio.doubleValue());
-        }
-
-
-
+            System.out.println("Resultado SQL Nativo:");
+            for (Object[] fila : resultadosNativo) {
+                String ciudad = (String) fila[0];
+                Number saldMedio = (Number) fila[1];
+                System.out.printf("Ciudad=%s → Saldo medio=%.2f%n",
+                        ciudad, saldMedio.doubleValue());
+            }
 
         } catch (PersistenceException e) {
-            if (trans.isActive()) trans.rollback();
+            if (trans.isActive())
+                trans.rollback();
+            System.out.println("ERROR persistiendo operaciones: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        trans.begin();
+        try {
+            List<Object[]> sucursalConMasClientes = em.createQuery(
+                "SELECT o, COUNT(DISTINCT cli) " +
+                "FROM Oficina o " +
+                "JOIN o.cuentas c " +
+                "JOIN c.Clientes cli " +
+                "GROUP BY o " +
+                "ORDER BY COUNT(DISTINCT cli) DESC", Object[].class)
+        .getResultList();
+
+        if (!sucursalConMasClientes.isEmpty()) {
+            Object[] resultado = sucursalConMasClientes.get(0);
+            Oficina sucursal = (Oficina) resultado[0];
+            Long numeroClientes = (Long) resultado[1];
+            System.out.printf("Sucursal con más clientes: %s, Clientes: %d%n", sucursal, numeroClientes);
+        }
+
+        } catch (PersistenceException e) {
+            if (trans.isActive())
+                trans.rollback();
             System.out.println("ERROR persistiendo operaciones: " + e.getMessage());
             e.printStackTrace();
         }
@@ -313,7 +332,7 @@ public class Test3 {
             entityManagerFactory.close();
         }
     }
-    
+
     public static void main(String[] args) {
         Test3 t = new Test3();
         t.prueba();
