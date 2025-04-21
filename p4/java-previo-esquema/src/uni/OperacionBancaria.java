@@ -5,8 +5,10 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,6 +17,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "OPERACION")
 @Inheritance(strategy = InheritanceType.JOINED)
+@IdClass(OperacionPK.class)
 public abstract class OperacionBancaria {
 
     @Id
@@ -23,7 +26,12 @@ public abstract class OperacionBancaria {
 
     @Id
     @ManyToOne(optional = false)
+    @JoinColumn(
+        name = "iban_iban",       // ← nombre que Hibernate usará en OPERACION
+        referencedColumnName = "iban"  // ← columna PK de Cuenta
+    )
     private Cuenta iban;
+
 
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha", nullable = false)
@@ -36,7 +44,8 @@ public abstract class OperacionBancaria {
     @Column(name = "cantidad", nullable = false)
     private double cantidad;
 
-    
+    @Column(name = "tipo", nullable = false)
+    private String tipo;     
 
     // Constructors
     public OperacionBancaria() {
@@ -92,7 +101,16 @@ public abstract class OperacionBancaria {
         this.iban = iban;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
 
+    public void setTipo(String tipo) {
+        if (!tipo.equals("transferencia") && !tipo.equals("ingreso") && !tipo.equals("retirada")) {
+            throw new IllegalArgumentException("El tipo debe ser 'transferencia', 'ingreso' o 'retirada'");
+        }
+        this.tipo = tipo;
+    }
 
     @Override
     public String toString() {

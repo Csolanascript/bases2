@@ -3,21 +3,15 @@ package uni;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
 
 
 @Entity
@@ -30,6 +24,11 @@ public class Cliente {
 
 
     @ManyToMany
+    @JoinTable(
+      name = "clientes_cuentas",                            // nombre físico de la tabla
+      joinColumns = @JoinColumn(name = "cliente_dni"),      // FK a Cliente(DNI)
+      inverseJoinColumns = @JoinColumn(name = "cuenta_id")  // FK a Cuenta(IBAN)
+    )
     private Set<Cuenta> Cuentas = new HashSet<>();
 
     @Column(name = "Nombre", nullable = false)

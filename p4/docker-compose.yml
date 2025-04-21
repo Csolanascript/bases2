@@ -17,6 +17,25 @@ services:
       timeout: 5s
       retries: 10
 
+
+  oracle2:
+    image: gvenzl/oracle-xe:latest
+    container_name: p3-oracle-2
+    ports:
+      - "1522:1521"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "false"
+      APP_USER: admin
+      APP_USER_PASSWORD: admin
+    volumes:
+      - oracle-data2:/ORCL
+      - ./sqlnet.ora:/opt/oracle/product/21c/dbhomeXE/network/admin/sqlnet.ora
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 volumes:
   oracle-data:
-
+  oracle-data2:

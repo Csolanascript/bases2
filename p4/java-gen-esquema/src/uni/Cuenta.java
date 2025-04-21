@@ -1,9 +1,10 @@
 package uni;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+
 
 
 
@@ -27,15 +28,15 @@ public class Cuenta {
     private long Saldo;
 
     @ManyToMany(mappedBy = "Cuentas")
-    private Set<Cliente> Clientes = new HashSet<>();
+    private List<Cliente> Clientes = new ArrayList<>();
    
 
     @OneToMany(mappedBy = "cuentaOrigen")
-    private Set<Operacion> operaciones = new HashSet<>();
-/*
+    private List<Operacion> operaciones = new ArrayList<>();
+
     @OneToMany(mappedBy = "cuentaDestino")
-    private Set<Transferencia> transferencias = new HashSet<>();
-*/
+    private List<Transferencia> transferencias = new ArrayList<>();
+
     // Constructor vacío requerido por JPA
     public Cuenta() {
     }
@@ -81,30 +82,30 @@ public class Cuenta {
         this.Saldo = saldo;
     }
 
-    public Set<Cliente> getClientes() {
+    public List<Cliente> getClientes() {
         return Clientes;
     }
 
-    public void setClientes(Set<Cliente> clientes) {
+    public void setClientes(List<Cliente> clientes) {
         this.Clientes = clientes;
     }
 
-    public Set<Operacion> getOperaciones() {
+    public List<Operacion> getOperaciones() {
         return operaciones;
     }
 
-    public void setOperaciones(Set<Operacion> operaciones) {
+    public void setOperaciones(List<Operacion> operaciones) {
         this.operaciones = operaciones;
     }
-/*
-    public Set<Transferencia> getTransferencias() {
+
+    public List<Transferencia> getTransferencias() {
         return transferencias;
     }
 
-    public void setTransferencia(Set<Transferencia> transferencias) {
+    public void setTransferencias(List<Transferencia> transferencias) {
         this.transferencias = transferencias;
     }
-*/
+
     // Métodos utilitarios
 
     public void addCliente(Cliente cliente) {
@@ -122,20 +123,20 @@ public class Cuenta {
         op.setCuentaOrigen(this);
     }
 
-    public void removeOperacion(Operacion op) {
-        operaciones.remove(op);
-        op.setCuentaOrigen(null);
-    }/*
-
-    public void addTransferencia(Transferencia transferencia) {
-        transferencias.add(transferencia);
-        transferencia.setCuentaDestino(this);
+    public void removeOperacion(Transferencia tr) {
+        transferencias.remove(tr);
+        tr.setCuentaOrigen(null);
     }
 
-    public void removeTransferencia(Transferencia transferencia) {
-        transferencias.remove(transferencia);
-        transferencia.setCuentaDestino(null);
-    }*/
+    public void addTransferencia(Transferencia tr) {
+        operaciones.add(tr);
+        tr.setCuentaDestino(this);
+    }
+
+    public void removeTransferencia(Transferencia tr) {
+        operaciones.remove(tr);
+        tr.setCuentaDestino(null);
+    }
 
     @Override
     public String toString() {

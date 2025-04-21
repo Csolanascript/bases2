@@ -11,11 +11,11 @@
     <class>uni.Cliente</class>
     <class>uni.Operacion</class>
     <class>uni.OperacionEfectivo</class>
-    <!-- <class>uni.Transferencia</class> -->
     <class>uni.Oficina</class>
     <class>uni.CuentaCorriente</class>
     <class>uni.CuentaAhorro</class>
     <class>uni.Direccion</class>
+    <class>uni.Transferencia</class>
     
     <!-- Disable automatic scanning -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -35,3 +35,7 @@
     </properties>
   </persistence-unit>
 </persistence>
+
+
+
+
