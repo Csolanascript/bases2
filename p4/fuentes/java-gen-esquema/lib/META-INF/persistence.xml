@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+  <persistence-unit name="UnidadPersistenciaBanco" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    
+    <!-- Explicitly list all entity classes -->
+    <class>uni.Cuenta</class>
+    <class>uni.Cliente</class>
+    <class>uni.Operacion</class>
+    <class>uni.OperacionEfectivo</class>
+    <class>uni.Oficina</class>
+    <class>uni.CuentaCorriente</class>
+    <class>uni.CuentaAhorro</class>
+    <class>uni.Direccion</class>
+    <class>uni.Transferencia</class>
+    
+    <!-- Disable automatic scanning -->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    
+    <properties>
+      <!-- Hibernate configuration for Oracle -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+      
+      <!-- Connection to Oracle XE -->
+      <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+      <!-- Cambiado a XEPDB1 en lugar de XE -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
+      <property name="javax.persistence.jdbc.user" value="admin"/>
+      <property name="javax.persistence.jdbc.password" value="admin"/>
+    </properties>
+  </persistence-unit>
+</persistence>
+
+
+
+
