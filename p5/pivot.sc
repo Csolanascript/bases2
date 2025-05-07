@@ -21,6 +21,10 @@ val pivotDF = laboratory_table.groupBy("person").pivot("std_observable_cd").sum(
 pivotDF.show()
 pivotDF.count
 
+// Pregunta 11
+val media1742 = pivotDF.select(avg("1742-6"))
+media1742.show()
+
 // 1. Media de valores numéricos para la prueba con código '3255-7'
 laboratory_table
   .filter($"std_observable_cd" === "3255-7")
