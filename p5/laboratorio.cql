@@ -48,21 +48,15 @@ FROM hospital;
 
 // Consultas pregunta 7
 
-/*
-SELECT AVG(obs_value_nm) FROM hospital WHERE std_observable_cd = '3255-7';
-*/
 
-/*
+SELECT AVG(obs_value_nm) FROM hospital WHERE std_observable_cd = '3255-7';
+
 SELECT AVG(obs_value_nm)
 FROM hospital
 WHERE person = 123498
 ALLOW FILTERING;
-*/
 
-/*
 SELECT * FROM hospital
 WHERE std_observable_cd = '3255-7'
   AND obs_value_nm >= 100 // Es muy pequeño asi que va a devolver miles de filas (153.130 en concreto)
 ALLOW FILTERING;
-
-*/
