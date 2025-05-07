@@ -17,18 +17,29 @@ CREATE TABLE IF NOT EXISTS hospital (
 /* 4. Carga masiva ───────────
  *    Ajusta la ruta si tu CSV está en otro sitio.
  */
-COPY hospital (
-        person,                /* ← mismo orden que el fichero */
-        std_observable_cd,
-        std_observable_st,
-        obs_value_nm
-)
-FROM '/data/dataset.csv'
-WITH DELIMITER = ';'           /* ← punto y coma */
- AND HEADER    = TRUE
- AND QUOTE     = '"'           /* gestiona valores con comas o saltos de línea */
- AND NULL      = ''
- AND ENCODING  = 'UTF8';
+//COPY hospital (
+//        person,                /* ← mismo orden que el fichero */
+//        std_observable_cd,
+//        std_observable_st,
+//        obs_value_nm
+//)
+//FROM '/data/dataset.csv'
+//WITH DELIMITER = ';'           /* ← punto y coma */
+// AND HEADER    = TRUE
+// AND QUOTE     = '"'           /* gestiona valores con comas o saltos de línea */
+// AND NULL      = ''
+// AND ENCODING  = 'UTF8';
 
-/* 5. Verificación rápida ──── */
-SELECT COUNT(*) FROM hospital;
+
+USE laboratorio;
+SELECT  
+    std_observable_cd  AS codigo_prueba,
+    std_observable_st  AS nombre_prueba
+FROM hospital
+PER PARTITION LIMIT 1;
+
+/* 2️⃣  Sólo códigos distintos  
+ *     cqlsh imprimirá “(N rows)” → N = total de pruebas */
+SELECT DISTINCT
+    std_observable_cd  AS codigo_prueba
+FROM hospital;
