@@ -1,3 +1,5 @@
+import org.apache.spark.sql.functions._
+
 // Se define el valor cassandraProperties: un diccionario
 // con los datos para conectarse al keyspace laboratorio
 // de la máquina cassandra
