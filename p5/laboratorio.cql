@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS hospital (
 /* 4. Carga masiva ───────────
  *    Ajusta la ruta si tu CSV está en otro sitio.
  */
+ /*
 //COPY hospital (
 //        person,                /* ← mismo orden que el fichero */
 //        std_observable_cd,
@@ -29,17 +30,34 @@ CREATE TABLE IF NOT EXISTS hospital (
 // AND QUOTE     = '"'           /* gestiona valores con comas o saltos de línea */
 // AND NULL      = ''
 // AND ENCODING  = 'UTF8';
-
+*/
 
 USE laboratorio;
+/*
 SELECT  
     std_observable_cd  AS codigo_prueba,
     std_observable_st  AS nombre_prueba
 FROM hospital
 PER PARTITION LIMIT 1;
 
-/* 2️⃣  Sólo códigos distintos  
- *     cqlsh imprimirá “(N rows)” → N = total de pruebas */
 SELECT DISTINCT
     std_observable_cd  AS codigo_prueba
 FROM hospital;
+*/
+
+/*
+SELECT AVG(obs_value_nm) FROM hospital WHERE std_observable_cd = '3255-7';
+*/
+
+SELECT AVG(obs_value_nm)
+FROM hospital
+WHERE person = 123498
+ALLOW FILTERING;
+
+
+
+SELECT * FROM hospital
+WHERE std_observable_cd = '3255-7'
+  AND obs_value_nm >= 100 // Es muy pequeño asi que va a devolver miles de filas (153.130 en concreto)
+ALLOW FILTERING;
+
